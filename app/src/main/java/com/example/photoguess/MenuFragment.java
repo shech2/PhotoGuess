@@ -40,8 +40,12 @@ public class MenuFragment extends Fragment {
         createGameBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), joinGameET.getText().toString(), Toast.LENGTH_LONG).show();
-                replaceFragment(new createGameFragment());
+                String name = joinGameET.getText().toString();
+                createGameFragment createFrag = new createGameFragment();
+                Bundle createBundle = new Bundle();
+                createBundle.putString("name" , name);
+                createFrag.setArguments(createBundle);
+                replaceFragment(createFrag);
             }
         });
 

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class createGameFragment extends Fragment {
 
@@ -26,6 +27,11 @@ public class createGameFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_create_game, container, false);
         backBTN = view.findViewById(R.id.backButton2);
 
+        savedInstanceState = this.getArguments();
+        if(savedInstanceState != null){
+            String name = savedInstanceState.getString("name");
+            Toast.makeText(view.getContext(), name, Toast.LENGTH_SHORT).show();
+        }
 
         backBTN.setOnClickListener(new View.OnClickListener() {
             @Override
