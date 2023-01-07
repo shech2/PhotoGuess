@@ -10,15 +10,21 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class createGameFragment extends Fragment {
 
     View view;
     Button backBTN;
     ListView listView;
+    ArrayList<String> items = new ArrayList<String>();
+    String name;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -26,12 +32,23 @@ public class createGameFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_create_game, container, false);
         backBTN = view.findViewById(R.id.backButton2);
+        listView = view.findViewById(R.id.roomList);
 
         savedInstanceState = this.getArguments();
         if(savedInstanceState != null){
             String name = savedInstanceState.getString("name");
-            Toast.makeText(view.getContext(), name, Toast.LENGTH_SHORT).show();
         }
+
+        savedInstanceState = this.getArguments();
+        if(savedInstanceState != null){
+            name = savedInstanceState.getString("name");
+            items.add(name);
+        }
+        // console
+        System.out.println(name);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items);
+        listView.setAdapter(adapter);
 
         backBTN.setOnClickListener(new View.OnClickListener() {
             @Override
