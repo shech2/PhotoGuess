@@ -23,7 +23,7 @@ public class createGameFragment extends Fragment {
     View view;
     Button backBTN;
     ListView listView;
-    ArrayList<String> items = new ArrayList<String>();
+    ArrayList<String> items = new ArrayList<>();
     String name;
 
     @Override
