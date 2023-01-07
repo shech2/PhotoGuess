@@ -11,30 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
-public class MenuFragment extends Fragment {
+public class joinGameFragment extends Fragment {
 
     View view;
-    Button settingsBTN;
     Button joinGameBTN;
+    Button backBTN;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_menu, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_join_game, container, false);
 
-        settingsBTN = view.findViewById(R.id.backButton);
-        settingsBTN.setOnClickListener(new View.OnClickListener() {
+        backBTN = view.findViewById(R.id.backButton);
+        backBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                replaceFragment(new SettingsFragment());
-            }
-        });
-
-        joinGameBTN = view.findViewById(R.id.joinGameButton);
-        joinGameBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new joinGameFragment());
+                replaceFragment(new MenuFragment());
             }
         });
         return view;
