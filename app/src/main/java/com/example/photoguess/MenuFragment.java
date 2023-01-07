@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class MenuFragment extends Fragment {
@@ -25,6 +26,7 @@ public class MenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_menu, container, false);
+        joinGameET = view.findViewById(R.id.editTextTextPersonName);
 
         settingsBTN = view.findViewById(R.id.backButton);
         settingsBTN.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +40,7 @@ public class MenuFragment extends Fragment {
         createGameBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(view.getContext(), joinGameET.getText().toString(), Toast.LENGTH_LONG).show();
                 replaceFragment(new createGameFragment());
             }
         });
