@@ -23,7 +23,7 @@ public class createGameFragment extends Fragment {
     View view;
     Button backBTN;
     ListView listView;
-    ArrayList<String> items = new ArrayList<String>();
+    ArrayList<String> items = new ArrayList<>();
     String name;
 
     @Override
@@ -47,7 +47,7 @@ public class createGameFragment extends Fragment {
         // console
         System.out.println(name);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items);
         listView.setAdapter(adapter);
 
         backBTN.setOnClickListener(new View.OnClickListener() {

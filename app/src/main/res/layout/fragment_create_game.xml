@@ -12,19 +12,19 @@
         android:layout_height="308dp"
         android:layout_marginBottom="352dp"
         android:background="#FFFFFF"
+        android:contentDescription="TODO"
         app:layout_constraintBottom_toTopOf="@id/backButton2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/logo"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/logo" />
 
     <Button
         android:id="@+id/backButton2"
         android:layout_width="88dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="162dp"
         android:layout_marginEnd="162dp"
         android:layout_marginBottom="5dp"
@@ -34,20 +34,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/pinDisplay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="ROOM 42069"
+        android:textAlignment="center"
+        android:textColor="#FF0000"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
     <RelativeLayout
-        android:layout_width="411dp"
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/backButton2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2">
+        app:layout_constraintTop_toBottomOf="@+id/pinDisplay">
 
         <ListView
             android:id="@+id/roomList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:textAlignment="center">
+
+        </ListView>
 
     </RelativeLayout>
 
