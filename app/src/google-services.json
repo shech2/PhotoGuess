@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "625359505631",
+    "project_id": "photoguess-6deb1",
+    "storage_bucket": "photoguess-6deb1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625359505631:android:adba7129a8a32dd8c2016a",
+        "android_client_info": {
+          "package_name": "com.example.photoguess"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625359505631-ddtoej0gru736fddpasgcub6shqot3s4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.photoguess",
+            "certificate_hash": "476a5a1bb6c14ac29f3b59602ad6f7d7a315261c"
+          }
+        },
+        {
+          "client_id": "625359505631-mfkojr5ifgvic8633q6hg8ebn7ru9ale.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDurOcPGKPJqUMC0AmfnHPCSbBbbydg2lw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625359505631-mfkojr5ifgvic8633q6hg8ebn7ru9ale.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
