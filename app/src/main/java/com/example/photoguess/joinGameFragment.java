@@ -38,27 +38,18 @@ public class joinGameFragment extends Fragment {
         gamePinET = view.findViewById(R.id.editTextGamePIN);
 
         backBTN = view.findViewById(R.id.backButton);
-        backBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new MenuFragment());
-            }
-        });
+        backBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         joinGameBTN = view.findViewById(R.id.joinGameButton);
-        joinGameBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-//                DatabaseReference roomRef = database.getReference("rooms").child("Room_"+gamePinET.getText().toString());
-                DatabaseReference myRef = database.getReference("Rooms");
-                myRef.child("Room_"+gamePinET.getText().toString()).child("players").child(playerName).setValue(playerName);
-                gameLobbyFragment createFrag = new gameLobbyFragment();
-                Bundle lobbyBundle = new Bundle();
-                lobbyBundle.putString("name" , playerName);
-                lobbyBundle.putString("roomPin" , gamePinET.getText().toString());
-                createFrag.setArguments(lobbyBundle);
-                replaceFragment(createFrag);
-            }
+        joinGameBTN.setOnClickListener(view -> {
+            FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
+            DatabaseReference myRef = database.getReference("Rooms");
+            myRef.child("Room_"+gamePinET.getText().toString()).child("players").child(playerName).setValue(playerName);
+            gameLobbyFragment createFrag = new gameLobbyFragment();
+            Bundle lobbyBundle = new Bundle();
+            lobbyBundle.putString("name" , playerName);
+            lobbyBundle.putString("roomPin" , gamePinET.getText().toString());
+            createFrag.setArguments(lobbyBundle);
+            replaceFragment(createFrag);
         });
 
         return view;

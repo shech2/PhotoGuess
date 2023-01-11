@@ -42,14 +42,15 @@ public class gameLobbyFragment extends Fragment {
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-        DatabaseReference playersRef = database.getReference("rooms").child("Room_"+roomPin).child("players");
-        playersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference playersRef = FirebaseDatabase.getInstance().getReference("Rooms").child("Room_"+roomPin).child("Players");
+        playersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                players.clear();
                 for (DataSnapshot player : snapshot.getChildren()) {
                     players.add(player.getValue().toString());
                 }
-                ListAdapter listAdapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item, players);
+                ListAdapter listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, players);
                 listView.setAdapter(listAdapter);
             }
 
@@ -65,9 +66,9 @@ public class gameLobbyFragment extends Fragment {
             players.add(name);
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_item, players);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_item, players);
         roomPinDisplay.setText("Room " + roomPin);
-        listView.setAdapter(adapter);
+//        listView.setAdapter(adapter);
 
         backBTN.setOnClickListener(new View.OnClickListener() {
             @Override
