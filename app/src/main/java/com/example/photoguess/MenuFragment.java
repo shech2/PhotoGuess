@@ -26,12 +26,12 @@ public class MenuFragment extends Fragment {
     Button settingsBTN;
     Button joinGameBTN;
     Button createGameBTN;
-    EditText joinGameET;
+    EditText nameET;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_menu, container, false);
-        joinGameET = view.findViewById(R.id.editTextTextPersonName);
+        nameET = view.findViewById(R.id.editTextTextPersonName);
 
         settingsBTN = view.findViewById(R.id.backButton);
         settingsBTN.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +53,7 @@ public class MenuFragment extends Fragment {
         joinGameBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                replaceFragment(new joinGameFragment());
+                joinRoom();
             }
         });
 
@@ -65,6 +65,14 @@ public class MenuFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
         fragmentTransaction.commit();
+    }
+
+    private void joinRoom(){
+        Bundle bundle = new Bundle();
+        bundle.putString("name", nameET.getText().toString());
+        joinGameFragment joinGameFragment = new joinGameFragment();
+        joinGameFragment.setArguments(bundle);
+        replaceFragment(new joinGameFragment());
     }
 
     private void createRoom(){
@@ -83,17 +91,16 @@ public class MenuFragment extends Fragment {
                     }
                     if (exists){
                         roomPin[0] = pinGenerator();
-                        System.out.println("WORKING WORKING: "+roomPin[0]);
                     }
                     else{
                         myRef.child("Room_"+roomPin[0]).get();
-                        String name = joinGameET.getText().toString();
+                        String name = nameET.getText().toString();
                         myRef.child("Room_" + roomPin[0]).child("players").child(name).setValue(name);
                         gameLobbyFragment createFrag = new gameLobbyFragment();
-                        Bundle createBundle = new Bundle();
-                        createBundle.putString("name" , name);
-                        createBundle.putString("roomPin" , roomPin[0]);
-                        createFrag.setArguments(createBundle);
+                        Bundle lobbyBundle = new Bundle();
+                        lobbyBundle.putString("name" , name);
+                        lobbyBundle.putString("roomPin" , roomPin[0]);
+                        createFrag.setArguments(lobbyBundle);
                         replaceFragment(createFrag);
                     }
 
