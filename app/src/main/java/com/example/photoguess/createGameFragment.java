@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,8 +24,10 @@ public class createGameFragment extends Fragment {
     View view;
     Button backBTN;
     ListView listView;
-    ArrayList<String> items = new ArrayList<>();
+    TextView roomPinDisplay;
+    ArrayList<String> players = new ArrayList<>();
     String name;
+    String roomPin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,21 +36,17 @@ public class createGameFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_create_game, container, false);
         backBTN = view.findViewById(R.id.backButton2);
         listView = view.findViewById(R.id.roomList);
-
-        savedInstanceState = this.getArguments();
-        if(savedInstanceState != null){
-            String name = savedInstanceState.getString("name");
-        }
+        roomPinDisplay = view.findViewById(R.id.pinDisplay);
 
         savedInstanceState = this.getArguments();
         if(savedInstanceState != null){
             name = savedInstanceState.getString("name");
-            items.add(name);
+            roomPin = savedInstanceState.getString("roomPin");
+            players.add(name);
         }
-        // console
-        System.out.println(name);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_item, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_item, players);
+        roomPinDisplay.setText("Room " + roomPin);
         listView.setAdapter(adapter);
 
         backBTN.setOnClickListener(new View.OnClickListener() {
