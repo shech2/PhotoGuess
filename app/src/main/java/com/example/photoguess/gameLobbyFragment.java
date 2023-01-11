@@ -1,6 +1,5 @@
 package com.example.photoguess;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class createGameFragment extends Fragment {
+public class gameLobbyFragment extends Fragment {
 
     View view;
     Button backBTN;
@@ -39,7 +37,7 @@ public class createGameFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_create_game, container, false);
+        view = inflater.inflate(R.layout.fragment_game_lobby, container, false);
         backBTN = view.findViewById(R.id.backButton2);
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);

@@ -89,7 +89,7 @@ public class MenuFragment extends Fragment {
                         myRef.child("Room_"+roomPin[0]).get();
                         String name = joinGameET.getText().toString();
                         myRef.child("Room_" + roomPin[0]).child("players").child(name).setValue(name);
-                        createGameFragment createFrag = new createGameFragment();
+                        gameLobbyFragment createFrag = new gameLobbyFragment();
                         Bundle createBundle = new Bundle();
                         createBundle.putString("name" , name);
                         createBundle.putString("roomPin" , roomPin[0]);
