@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,15 +37,16 @@ public class MenuFragment extends Fragment {
         createGameBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Write a message to the database
+                FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
+                DatabaseReference myRef = database.getReference("CurrentRoom");
                 String name = joinGameET.getText().toString();
+                myRef.setValue(name);
                 createGameFragment createFrag = new createGameFragment();
                 Bundle createBundle = new Bundle();
                 createBundle.putString("name" , name);
                 createFrag.setArguments(createBundle);
                 replaceFragment(createFrag);
-                FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-                DatabaseReference myRef = database.getReference("CurrentRoom");
-                myRef.setValue(name);
             }
         });
 
