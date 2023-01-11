@@ -34,28 +34,13 @@ public class MenuFragment extends Fragment {
         nameET = view.findViewById(R.id.editTextTextPersonName);
 
         settingsBTN = view.findViewById(R.id.backButton);
-        settingsBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new SettingsFragment());
-            }
-        });
+        settingsBTN.setOnClickListener(view -> replaceFragment(new SettingsFragment()));
 
         createGameBTN = view.findViewById(R.id.createGameButton);
-        createGameBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createRoom();
-            }
-        });
+        createGameBTN.setOnClickListener(view -> createRoom());
 
         joinGameBTN = view.findViewById(R.id.joinGameButton);
-        joinGameBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                joinRoom();
-            }
-        });
+        joinGameBTN.setOnClickListener(view -> joinRoom());
 
         return view;
     }
@@ -70,9 +55,9 @@ public class MenuFragment extends Fragment {
     private void joinRoom(){
         Bundle bundle = new Bundle();
         bundle.putString("name", nameET.getText().toString());
-        joinGameFragment joinGameFragment = new joinGameFragment();
-        joinGameFragment.setArguments(bundle);
-        replaceFragment(new joinGameFragment());
+        joinGameFragment joinFrag = new joinGameFragment();
+        joinFrag.setArguments(bundle);
+        replaceFragment(joinFrag);
     }
 
     private void createRoom(){
@@ -93,9 +78,8 @@ public class MenuFragment extends Fragment {
                         roomPin[0] = pinGenerator();
                     }
                     else{
-                        myRef.child("Room_"+roomPin[0]).get();
                         String name = nameET.getText().toString();
-                        myRef.child("Room_" + roomPin[0]).child("players").child(name).setValue(name);
+                        myRef.child("Room_"+roomPin[0]).child("players").child(name).setValue(name);
                         gameLobbyFragment createFrag = new gameLobbyFragment();
                         Bundle lobbyBundle = new Bundle();
                         lobbyBundle.putString("name" , name);
@@ -103,7 +87,6 @@ public class MenuFragment extends Fragment {
                         createFrag.setArguments(lobbyBundle);
                         replaceFragment(createFrag);
                     }
-
                 }
             }
             @Override
