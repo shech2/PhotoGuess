@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/musicToggleButton"
+        <SeekBar
+            android:id="@+id/MasterVolumeSeekbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -20,15 +20,14 @@
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="25dp"
             android:backgroundTint="#FF0000"
-            android:text="Music"
-            app:layout_constraintBottom_toTopOf="@+id/sfxToggleButton"
+            app:layout_constraintBottom_toTopOf="@+id/MusicSeekbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/sfxToggleButton"
+        <SeekBar
+            android:id="@+id/MusicSeekbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -36,15 +35,14 @@
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="25dp"
             android:backgroundTint="#FF0000"
-            android:text="SFX"
-            app:layout_constraintBottom_toTopOf="@+id/masterVolumeButton"
+            app:layout_constraintBottom_toTopOf="@+id/SFXSeekbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/musicToggleButton" />
+            app:layout_constraintTop_toBottomOf="@+id/MasterVolumeSeekbar" />
 
-        <Button
-            android:id="@+id/masterVolumeButton"
+        <SeekBar
+            android:id="@+id/SFXSeekbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -52,12 +50,11 @@
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="334dp"
             android:backgroundTint="#FF0000"
-            android:text="Master Volume"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sfxToggleButton" />
+            app:layout_constraintTop_toBottomOf="@+id/MusicSeekbar" />
 
         <Button
             android:id="@+id/homeButton"
@@ -71,6 +68,40 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Master Volume"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/MasterVolumeSeekbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Music Volume"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/MusicSeekbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="SFX Volume"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/SFXSeekbar"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
