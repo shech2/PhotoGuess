@@ -1,6 +1,8 @@
 package com.example.photoguess;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -14,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import com.example.photoguess.databinding.FragmentGameBinding;
 
@@ -42,12 +45,12 @@ public class GameFragment extends Fragment {
                 });
         // Open camera with the launcher
         binding.cameraLaunchBTN.setOnClickListener(view -> takePicture.launch(null));
-
         // ActivityLauncher init
         Gallery = registerForActivityResult(new ActivityResultContracts.GetContent() , result -> System.out.println("Result " + result));
         // Open gallery with the launcher
         binding.galleryLaunchBTN.setOnClickListener(view -> Gallery.launch("image/*"));
 
+        // Return the root view of the layout
         binding.BackBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
 
         // Return the root view
