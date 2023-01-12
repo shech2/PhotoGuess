@@ -87,6 +87,9 @@ public class gameLobbyFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        playersRef.child(name).removeValue();
+        if (playersRef == null)
+            playersRef.getParent().removeValue();
         playersRef.removeEventListener(eventListener);
     }
 }
