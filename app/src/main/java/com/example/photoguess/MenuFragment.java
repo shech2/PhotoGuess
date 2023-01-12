@@ -27,6 +27,7 @@ public class MenuFragment extends Fragment {
     Button joinGameBTN;
     Button createGameBTN;
     EditText nameET;
+    Button testBTN;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +41,20 @@ public class MenuFragment extends Fragment {
         createGameBTN.setOnClickListener(view -> createRoom());
 
         joinGameBTN = view.findViewById(R.id.joinGameButton);
-        joinGameBTN.setOnClickListener(view -> joinRoom());
+        joinGameBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                joinRoom();
+            }
+        });
+        testBTN = view.findViewById(R.id.test);
+        testBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                replaceFragment(new GameFragment());
+            }
+        });
+
 
         return view;
     }
