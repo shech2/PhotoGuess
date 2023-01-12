@@ -43,7 +43,7 @@ public class joinGameFragment extends Fragment {
         joinGameBTN.setOnClickListener(view -> {
             FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
             DatabaseReference myRef = database.getReference("Rooms");
-            myRef.child("Room_"+gamePinET.getText().toString()).child("players").child(playerName).setValue(playerName);
+            myRef.child("Room_"+gamePinET.getText().toString()).child("Players").child(playerName).setValue(playerName);
             gameLobbyFragment createFrag = new gameLobbyFragment();
             Bundle lobbyBundle = new Bundle();
             lobbyBundle.putString("name" , playerName);

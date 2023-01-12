@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,49 +34,46 @@ public class gameLobbyFragment extends Fragment {
     ArrayList<String> players = new ArrayList<>();
     String name;
     String roomPin;
+    ValueEventListener eventListener;
+    DatabaseReference playersRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        savedInstanceState = this.getArguments();
+        if (savedInstanceState != null) {
+            name = savedInstanceState.getString("name");
+            roomPin = savedInstanceState.getString("roomPin");
+            players.add(name);
+        }
         view = inflater.inflate(R.layout.fragment_game_lobby, container, false);
         backBTN = view.findViewById(R.id.backButton2);
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-        DatabaseReference playersRef = FirebaseDatabase.getInstance().getReference("Rooms").child("Room_"+roomPin).child("Players");
-        playersRef.addValueEventListener(new ValueEventListener() {
+        playersRef = database.getReference("Rooms").child("Room_" + roomPin).child("Players");
+        eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 players.clear();
                 for (DataSnapshot player : snapshot.getChildren()) {
+                    System.out.println("Player name " + player.getValue().toString());
                     players.add(player.getValue().toString());
                 }
-                ListAdapter listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, players);
+                ListAdapter listAdapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item, players);
                 listView.setAdapter(listAdapter);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.w("TAG", "Failed to read value.", error.toException());
             }
-        });
-        savedInstanceState = this.getArguments();
-        if(savedInstanceState != null){
-            name = savedInstanceState.getString("name");
-            roomPin = savedInstanceState.getString("roomPin");
-            players.add(name);
-        }
+        };
+        playersRef.addValueEventListener(eventListener);
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_item, players);
         roomPinDisplay.setText("Room " + roomPin);
-//        listView.setAdapter(adapter);
 
-        backBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new MenuFragment());
-            }
-        });
+        backBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         return view;
     }
 
@@ -84,5 +82,12 @@ public class gameLobbyFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        playersRef.removeEventListener(eventListener);
+
     }
 }
