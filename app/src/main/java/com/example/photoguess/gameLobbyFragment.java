@@ -88,6 +88,5 @@ public class gameLobbyFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         playersRef.removeEventListener(eventListener);
-
     }
 }

@@ -98,9 +98,9 @@ public class SettingsFragment extends Fragment {
 
 
         // maxVolume
-        int SFXMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+        int SFXMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
         // currentVolume
-        int SFXCurrentVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+        int SFXCurrentVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
         // Set the max volume of the seekbar
         binding.MusicSeekbar.setMax(SFXMaxVolume);
         // Set the current volume of the seekbar
@@ -111,7 +111,7 @@ public class SettingsFragment extends Fragment {
         binding.SFXSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, progress, 0);
+                audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, progress, 0);
             }
 
             @Override
