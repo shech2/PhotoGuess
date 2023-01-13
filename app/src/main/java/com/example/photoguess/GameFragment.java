@@ -2,7 +2,10 @@ package com.example.photoguess;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -41,6 +44,11 @@ public class GameFragment extends Fragment {
                     @Override
                     public void onActivityResult(Bitmap result) {
                       binding.Logo.setImageBitmap(result);
+                      
+                      // Blur the image (Play with the radius for a better result) --> for SDK 30+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            binding.Logo.setRenderEffect(RenderEffect.createBlurEffect(20, 20, Shader.TileMode.MIRROR));
+                        }
                     }
                 });
         // Open camera with the launcher

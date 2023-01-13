@@ -68,10 +68,16 @@ public class MenuFragment extends Fragment {
 
     private void joinRoom(){
         Bundle bundle = new Bundle();
-        bundle.putString("name", nameET.getText().toString());
-        joinGameFragment joinFrag = new joinGameFragment();
-        joinFrag.setArguments(bundle);
-        replaceFragment(joinFrag);
+        String name = nameET.getText().toString().trim();
+        if(name.isEmpty()){
+            nameET.setError("Please enter a name");
+            nameET.requestFocus();
+        }else {
+            bundle.putString("name", name);
+            joinGameFragment joinFrag = new joinGameFragment();
+            joinFrag.setArguments(bundle);
+            replaceFragment(joinFrag);
+        }
     }
 
     private void createRoom(){
@@ -92,14 +98,19 @@ public class MenuFragment extends Fragment {
                         roomPin[0] = pinGenerator();
                     }
                     else{
-                        String name = nameET.getText().toString();
-                        myRef.child("Room_"+roomPin[0]).child("Players").child(name).setValue(name);
-                        gameLobbyFragment createFrag = new gameLobbyFragment();
-                        Bundle lobbyBundle = new Bundle();
-                        lobbyBundle.putString("name" , name);
-                        lobbyBundle.putString("roomPin" , roomPin[0]);
-                        createFrag.setArguments(lobbyBundle);
-                        replaceFragment(createFrag);
+                        String name = nameET.getText().toString().trim();
+                        if(name.isEmpty()){
+                            nameET.setError("Please enter a name");
+                            nameET.requestFocus();
+                        }else {
+                                myRef.child("Room_" + roomPin[0]).child("Players").child(name).setValue(name);
+                                gameLobbyFragment createFrag = new gameLobbyFragment();
+                                Bundle lobbyBundle = new Bundle();
+                                lobbyBundle.putString("name", name);
+                                lobbyBundle.putString("roomPin", roomPin[0]);
+                                createFrag.setArguments(lobbyBundle);
+                                replaceFragment(createFrag);
+                        }
                     }
                 }
             }
