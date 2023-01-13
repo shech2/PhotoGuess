@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class MenuFragment extends Fragment {
@@ -34,18 +33,8 @@ public class MenuFragment extends Fragment {
 
         binding.createGameButton.setOnClickListener(view -> createRoom());
 
-        binding.joinGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                joinRoom();
-            }
-        });
-        binding.test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new GameFragment());
-            }
-        });
+        binding.joinGameButton.setOnClickListener(view -> joinRoom());
+        binding.test.setOnClickListener(view -> replaceFragment(new GameFragment()));
 
 
         return view;
@@ -83,7 +72,7 @@ public class MenuFragment extends Fragment {
                 while (exists) {
                     exists = false;
                     for (DataSnapshot room : snapshot.getChildren()) {
-                        if (room.getKey().equals("Room_"+roomPin[0]))
+                        if (Objects.equals(room.getKey(), "Room_" + roomPin[0]))
                             exists = true;
                     }
                     if (exists){
@@ -116,7 +105,6 @@ public class MenuFragment extends Fragment {
     private String pinGenerator(){
         Random rand = new Random();
         int roomPIN = rand.nextInt(99999 - 10000 + 1) + 10000;
-        String roomPINString = Integer.toString(roomPIN);
-        return roomPINString;
+        return Integer.toString(roomPIN);
     }
 }
