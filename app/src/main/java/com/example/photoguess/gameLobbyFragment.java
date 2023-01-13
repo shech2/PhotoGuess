@@ -73,7 +73,8 @@ public class gameLobbyFragment extends Fragment {
         };
         playersRef.addValueEventListener(eventListener);
 
-        roomPinDisplay.setText("Room " + roomPin);
+        String string = getString(R.string.roomPin, roomPin);
+        roomPinDisplay.setText(string);
 
         backBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         return view;
