@@ -31,7 +31,7 @@ public class SettingsFragment extends Fragment {
         binding.homeButton.setOnClickListener(view -> replaceFragment(new MenuFragment()));
 
         // AudioManger init
-        audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager) requireActivity().getSystemService(Context.AUDIO_SERVICE);
 
         // maxVolume
         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
