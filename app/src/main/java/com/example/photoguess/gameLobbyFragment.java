@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class gameLobbyFragment extends Fragment {
 
@@ -36,6 +37,7 @@ public class gameLobbyFragment extends Fragment {
     String roomPin;
     ValueEventListener eventListener;
     DatabaseReference playersRef;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -57,7 +59,7 @@ public class gameLobbyFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 players.clear();
                 for (DataSnapshot player : snapshot.getChildren()) {
-                    System.out.println("Player name " + player.getValue().toString());
+                    System.out.println("Player name " + Objects.requireNonNull(player.getValue()));
                     players.add(player.getValue().toString());
                 }
                 ListAdapter listAdapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item, players);
@@ -88,8 +90,10 @@ public class gameLobbyFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         playersRef.child(name).removeValue();
-        if (playersRef == null)
+        if (playersRef == null) {
+            assert false;
             playersRef.getParent().removeValue();
+        }
         playersRef.removeEventListener(eventListener);
     }
 }

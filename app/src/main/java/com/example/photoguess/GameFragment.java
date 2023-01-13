@@ -1,14 +1,11 @@
 package com.example.photoguess;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
-import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -16,10 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 
 import com.example.photoguess.databinding.FragmentGameBinding;
 
@@ -40,21 +37,19 @@ public class GameFragment extends Fragment {
         view = binding.getRoot();
 
         // ActivityLauncher init
-        takePicture = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(), new ActivityResultCallback<Bitmap>() {
-                    @Override
-                    public void onActivityResult(Bitmap result) {
-                      binding.Logo.setImageBitmap(result);
-                      
-                      // Blur the image (Play with the radius for a better result) --> for SDK 30+
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            binding.Logo.setRenderEffect(RenderEffect.createBlurEffect(20, 20, Shader.TileMode.MIRROR));
-                        }
-                    }
-                });
+        takePicture = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(), result -> {
+          binding.Logo.setImageBitmap(result);
+          // Save the result to the Gallery
+                addImageToGallery(result);
+            // Blur the image (Play with the radius for a better result) --> for SDK 30+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                binding.Logo.setRenderEffect(RenderEffect.createBlurEffect(20, 20, Shader.TileMode.MIRROR));
+            }
+        });
         // Open camera with the launcher
         binding.cameraLaunchBTN.setOnClickListener(view -> takePicture.launch(null));
         // ActivityLauncher init
-        Gallery = registerForActivityResult(new ActivityResultContracts.GetContent() , result -> System.out.println("Result " + result));
+        Gallery = registerForActivityResult(new ActivityResultContracts.GetContent() , result -> binding.Logo.setImageURI(result));
         // Open gallery with the launcher
         binding.galleryLaunchBTN.setOnClickListener(view -> Gallery.launch("image/*"));
 
@@ -83,4 +78,10 @@ public class GameFragment extends Fragment {
         // Commit the transaction
         fragmentTransaction.commit();
     }
+
+    private void addImageToGallery(final Bitmap picture) {
+        // Save the image to the gallery
+        MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(), picture, "PhotoGuess", "PhotoGuess");
+    }
+
 }

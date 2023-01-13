@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SeekBar;
 
 import com.example.photoguess.databinding.FragmentSettingsBinding;
@@ -29,12 +28,7 @@ public class SettingsFragment extends Fragment {
         // Binding the layout to the fragment
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-        binding.homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                replaceFragment(new MenuFragment());
-            }
-        });
+        binding.homeButton.setOnClickListener(view -> replaceFragment(new MenuFragment()));
 
         // AudioManger init
         audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);

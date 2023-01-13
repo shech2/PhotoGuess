@@ -6,6 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".gameLobbyFragment">
 
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/backButton2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pinDisplay">
+
+        <ListView
+            android:id="@+id/roomList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
     <ImageView
         android:id="@+id/Logo"
         android:layout_width="414dp"
@@ -48,24 +66,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Logo" />
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="5dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/backButton2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pinDisplay">
-
-        <ListView
-            android:id="@+id/roomList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-        />
-
-    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
