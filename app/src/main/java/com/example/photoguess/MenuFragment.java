@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.photoguess.databinding.FragmentMenuBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,32 +24,23 @@ import java.util.Random;
 public class MenuFragment extends Fragment {
 
     View view;
-    Button settingsBTN;
-    Button joinGameBTN;
-    Button createGameBTN;
-    EditText nameET;
-    Button testBTN;
+    FragmentMenuBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_menu, container, false);
-        nameET = view.findViewById(R.id.editTextTextPersonName);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentMenuBinding.inflate(inflater, container, false);
+        view = binding.getRoot();
+        binding.SettingsBTN.setOnClickListener(view -> replaceFragment(new SettingsFragment()));
 
-        settingsBTN = view.findViewById(R.id.backButton);
-        settingsBTN.setOnClickListener(view -> replaceFragment(new SettingsFragment()));
+        binding.createGameButton.setOnClickListener(view -> createRoom());
 
-        createGameBTN = view.findViewById(R.id.createGameButton);
-        createGameBTN.setOnClickListener(view -> createRoom());
-
-        joinGameBTN = view.findViewById(R.id.joinGameButton);
-        joinGameBTN.setOnClickListener(new View.OnClickListener() {
+        binding.joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 joinRoom();
             }
         });
-        testBTN = view.findViewById(R.id.test);
-        testBTN.setOnClickListener(new View.OnClickListener() {
+        binding.test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 replaceFragment(new GameFragment());
@@ -68,10 +60,10 @@ public class MenuFragment extends Fragment {
 
     private void joinRoom(){
         Bundle bundle = new Bundle();
-        String name = nameET.getText().toString().trim();
+        String name = binding.editTextTextPersonName.getText().toString().trim();
         if(name.isEmpty()){
-            nameET.setError("Please enter a name");
-            nameET.requestFocus();
+            binding.editTextTextPersonName.setError("Please enter a name");
+            binding.editTextTextPersonName.requestFocus();
         }else {
             bundle.putString("name", name);
             joinGameFragment joinFrag = new joinGameFragment();
@@ -98,10 +90,10 @@ public class MenuFragment extends Fragment {
                         roomPin[0] = pinGenerator();
                     }
                     else{
-                        String name = nameET.getText().toString().trim();
+                        String name = binding.editTextTextPersonName.getText().toString().trim();
                         if(name.isEmpty()){
-                            nameET.setError("Please enter a name");
-                            nameET.requestFocus();
+                            binding.editTextTextPersonName.setError("Please enter a name");
+                            binding.editTextTextPersonName.requestFocus();
                         }else {
                                 myRef.child("Room_" + roomPin[0]).child("Players").child(name).setValue(name);
                                 gameLobbyFragment createFrag = new gameLobbyFragment();

@@ -69,12 +69,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
 
             <Button
-                android:id="@+id/backButton"
+                android:id="@+id/SettingsBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="145dp"
                 android:layout_marginTop="100dp"
-                android:layout_marginEnd="149dp"
+                android:layout_marginEnd="145dp"
                 android:layout_marginBottom="5dp"
                 android:backgroundTint="#FF0000"
                 android:text="Settings"
@@ -87,10 +87,13 @@
 
             <Button
                 android:id="@+id/test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="70dp"
+                android:backgroundTint="#FF0000"
                 android:text="TEST"
-                app:layout_constraintBottom_toTopOf="@+id/backButton"
+                app:layout_constraintBottom_toTopOf="@+id/SettingsBTN"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/joinGameButton" />

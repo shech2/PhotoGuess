@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -38,7 +37,7 @@ public class joinGameFragment extends Fragment {
 
         gamePinET = view.findViewById(R.id.editTextGamePIN);
 
-        backBTN = view.findViewById(R.id.backButton);
+        backBTN = view.findViewById(R.id.SettingsBTN);
         backBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         joinGameBTN = view.findViewById(R.id.joinGameButton);
         joinGameBTN.setOnClickListener(view -> {
