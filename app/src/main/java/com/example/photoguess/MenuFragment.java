@@ -93,7 +93,8 @@ public class MenuFragment extends Fragment {
                     }
                     else{
                         String name = nameET.getText().toString();
-                        myRef.child("Room_"+roomPin[0]).child("Players").child(name).setValue(name);
+                        myRef.child("Room_"+roomPin[0]).child("Counter").setValue(1);
+                        myRef.child("Room_"+roomPin[0]).child("Players").child(name).setValue(name,1);
                         gameLobbyFragment createFrag = new gameLobbyFragment();
                         Bundle lobbyBundle = new Bundle();
                         lobbyBundle.putString("name" , name);
