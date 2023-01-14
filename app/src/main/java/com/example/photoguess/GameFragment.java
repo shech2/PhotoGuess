@@ -95,7 +95,7 @@ public class GameFragment extends Fragment {
                 return;
             }
             User selectedPlayer = players.get(currentPos);
-            System.out.println(selectedPlayer);
+            System.out.println(selectedPlayer.getName());
         });
         // Return the root view
         return view;
