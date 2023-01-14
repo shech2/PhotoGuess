@@ -77,26 +77,44 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="162dp"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="250dp"
         android:layout_marginEnd="161dp"
         android:layout_marginBottom="43dp"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Logo" />
+        app:layout_constraintTop_toBottomOf="@+id/Logo"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/SPIN"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="376dp"
+        android:layout_marginBottom="43dp"
+        android:text="SPIN"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.702"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Logo"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="62dp"
         android:layout_height="64dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="42dp"
         android:layout_marginEnd="16dp"
+        android:contentDescription="@string/arrow"
         android:src="@drawable/leftarrow"
         app:layout_constraintBottom_toTopOf="@+id/imageView5"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/roomShuffle"
         app:layout_constraintTop_toBottomOf="@+id/cameraLaunchBTN" />
 
@@ -105,6 +123,7 @@
         android:layout_width="62dp"
         android:layout_height="64dp"
         android:layout_marginEnd="17dp"
+        android:contentDescription="@string/arrow"
         android:src="@drawable/leftarrow"
         app:layout_constraintBottom_toTopOf="@+id/imageView6"
         app:layout_constraintEnd_toEndOf="parent"
@@ -113,13 +132,15 @@
 
     <ImageView
         android:id="@+id/imageView6"
-        android:layout_width="62dp"
-        android:layout_height="64dp"
+        android:layout_width="60dp"
+        android:layout_height="53dp"
         android:layout_marginEnd="17dp"
-        android:layout_marginBottom="149dp"
+        android:layout_marginBottom="125dp"
+        android:contentDescription="@string/arrow"
         android:src="@drawable/leftarrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/roomShuffle"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 

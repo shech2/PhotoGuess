@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.example.photoguess.databinding.FragmentGameBinding;
@@ -30,6 +31,7 @@ public class GameFragment extends Fragment {
     ActivityResultLauncher<String> Gallery;
     ArrayList<String> players;
     View view;
+    int currentPos = -1;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -67,11 +69,14 @@ public class GameFragment extends Fragment {
         players.add("Player 3");
         players.add("Player 4");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),R.layout.fragment_item,players);
-        int currentPos = 0;
 
         binding.roomShuffle.setAdapter(adapter);
-        binding.roomShuffle.setOnItemClickListener((parent, view, position, id) -> {
-
+        binding.roomShuffle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                currentPos = position;
+                updateArrowVisibility();
+            }
         });
 
         // Return the root view
@@ -100,6 +105,14 @@ public class GameFragment extends Fragment {
     private void addImageToGallery(final Bitmap picture) {
         // Save the image to the gallery
         MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(), picture, "PhotoGuess", "PhotoGuess");
+    }
+
+
+    private void updateArrowVisibility() {
+        for (int i = 0; i < binding.roomShuffle.getChildCount(); i++) {
+            View view = binding.roomShuffle.getChildAt(i);
+            binding.imageView4.setVisibility(i == currentPos ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 
 }
