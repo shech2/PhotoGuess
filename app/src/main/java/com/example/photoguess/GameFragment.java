@@ -18,18 +18,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.example.photoguess.databinding.FragmentGameBinding;
 
 import java.util.ArrayList;
+
+
+class User {
+    private final String name;
+
+    public User(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+
 
 public class GameFragment extends Fragment {
 
     private FragmentGameBinding binding;
     ActivityResultLauncher<Void> takePicture;
     ActivityResultLauncher<String> Gallery;
-    ArrayList<String> players;
     View view;
+    int currentPos = -1;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -60,20 +76,28 @@ public class GameFragment extends Fragment {
         // Return the root view of the layout
         binding.BackBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
 
-        // ListView
-        players = new ArrayList<>();
-        players.add("Player 1");
-        players.add("Player 2");
-        players.add("Player 3");
-        players.add("Player 4");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),R.layout.fragment_item,players);
-        int currentPos = 0;
+        ArrayList<User> players = new ArrayList<>();
+        players.add(new User("Player 1"));
+        players.add(new User("Player 2"));
+        players.add(new User("Player 3"));
+        players.add(new User("Player 4"));
 
+        ListAdapter adapter = new ListAdapter(getContext(), players);
         binding.roomShuffle.setAdapter(adapter);
         binding.roomShuffle.setOnItemClickListener((parent, view, position, id) -> {
-
+            currentPos = position;
+            updateArrowVisibility();
         });
 
+
+        binding.SPIN.setOnClickListener(v -> {
+            if (currentPos == -1) {
+                Toast.makeText(getActivity(), "No player selected", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            User selectedPlayer = players.get(currentPos);
+            System.out.println(selectedPlayer);
+        });
         // Return the root view
         return view;
     }
@@ -101,5 +125,18 @@ public class GameFragment extends Fragment {
         // Save the image to the gallery
         MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(), picture, "PhotoGuess", "PhotoGuess");
     }
+
+
+    private void updateArrowVisibility() {
+        for (int i = 0; i < binding.roomShuffle.getChildCount(); i++) {
+            view = binding.roomShuffle.getChildAt(i);
+            if (i == currentPos) {
+                view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
+            } else {
+                view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
 
 }

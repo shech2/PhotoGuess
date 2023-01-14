@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -62,8 +61,8 @@ public class gameLobbyFragment extends Fragment {
                     System.out.println("Player name " + Objects.requireNonNull(player.getValue()));
                     players.add(player.getValue().toString());
                 }
-                ListAdapter listAdapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item, players);
-                listView.setAdapter(listAdapter);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item2, players);
+                listView.setAdapter(adapter);
             }
 
             @Override
