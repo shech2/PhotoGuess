@@ -6,25 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".GameFragment">
 
-    <ImageButton
-        android:id="@+id/galleryLaunchBTN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="92dp"
-        android:contentDescription="@string/gallery"
-        android:src="@android:drawable/ic_menu_gallery"
-        app:layout_constraintEnd_toStartOf="@+id/cameraLaunchBTN"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Logo" />
-
     <ImageView
         android:id="@+id/Logo"
-        android:layout_width="413dp"
-        android:layout_height="307dp"
+        android:layout_width="408dp"
+        android:layout_height="200dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="false"
@@ -32,7 +17,7 @@
         android:background="#FFFFFF"
         android:contentDescription="@string/logo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/uploadlogo_foreground" />
@@ -42,25 +27,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="220dp"
         android:layout_toStartOf="@+id/galleryLaunchBTN"
         android:contentDescription="@string/camera"
         android:src="@android:drawable/ic_menu_camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/galleryLaunchBTN"
-        app:layout_constraintTop_toBottomOf="@+id/Logo"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ImageContrastCheck" />
+
+    <ImageButton
+        android:id="@+id/galleryLaunchBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="92dp"
+        android:contentDescription="@string/gallery"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/cameraLaunchBTN"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Logo" />
 
     <ListView
         android:id="@+id/roomShuffle"
-        android:layout_width="411dp"
-        android:layout_height="235dp"
+        android:layout_width="408dp"
+        android:layout_height="279dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="14dp"
         android:layout_marginBottom="10dp"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/BackBTN"
@@ -72,38 +72,30 @@
 
     <Button
         android:id="@+id/BackBTN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="94dp"
+        android:layout_height="0dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="250dp"
-        android:layout_marginEnd="161dp"
-        android:layout_marginBottom="43dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="#FF0000"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Logo"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toStartOf="@+id/SPIN"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/SPIN"
-        android:layout_width="88dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="376dp"
-        android:layout_marginBottom="43dp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="#FF0000"
-        android:text="SPIN"
+        android:text="@string/spin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.702"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Logo"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/BackBTN" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
