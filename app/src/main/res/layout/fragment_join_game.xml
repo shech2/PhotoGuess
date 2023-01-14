@@ -24,7 +24,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/logo" />
+            app:srcCompat="@drawable/logo"
+            android:contentDescription="@string/logo" />
 
         <EditText
             android:id="@+id/editTextGamePIN"
@@ -33,12 +34,13 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:minHeight="48dp"
-            android:hint="Enter game PIN"
+            android:hint="@string/enter_game_pin"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="" />
 
 
         <Button
@@ -49,7 +51,7 @@
             android:layout_marginTop="100dp"
             android:layout_marginEnd="50dp"
             android:backgroundTint="#FF0000"
-            android:text="Join Game"
+            android:text="@string/join_game"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +66,7 @@
             android:layout_marginEnd="149dp"
             android:layout_marginBottom="5dp"
             android:backgroundTint="#FF0000"
-            android:text="Back"
+            android:text="@string/back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.551"

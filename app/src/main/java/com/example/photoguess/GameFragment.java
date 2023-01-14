@@ -17,14 +17,18 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.example.photoguess.databinding.FragmentGameBinding;
+
+import java.util.ArrayList;
 
 public class GameFragment extends Fragment {
 
     private FragmentGameBinding binding;
     ActivityResultLauncher<Void> takePicture;
     ActivityResultLauncher<String> Gallery;
+    ArrayList<String> players;
     View view;
 
     @Override
@@ -55,6 +59,20 @@ public class GameFragment extends Fragment {
 
         // Return the root view of the layout
         binding.BackBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
+
+        // ListView
+        players = new ArrayList<>();
+        players.add("Player 1");
+        players.add("Player 2");
+        players.add("Player 3");
+        players.add("Player 4");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),R.layout.fragment_item,players);
+        int currentPos = 0;
+
+        binding.roomShuffle.setAdapter(adapter);
+        binding.roomShuffle.setOnItemClickListener((parent, view, position, id) -> {
+
+        });
 
         // Return the root view
         return view;
