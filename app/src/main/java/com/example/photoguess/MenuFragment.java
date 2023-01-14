@@ -97,7 +97,7 @@ public class MenuFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                System.out.println("The read failed: " + error.getCode());
             }
         });
     }

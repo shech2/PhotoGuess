@@ -17,4 +17,5 @@
     <string name="master_volume">Master Volume</string>
     <string name="music_volume">Music Volume</string>
     <string name="sfx_volume">SFX Volume</string>
+    <string name="arrow">arrow</string>
 </resources>
