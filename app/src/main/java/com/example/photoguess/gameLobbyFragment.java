@@ -101,6 +101,14 @@ public class gameLobbyFragment extends Fragment {
                     playersCount = (int) snapshot.child("Players").getChildrenCount();
                     countRef.setValue(playersCount);
                 }
+                if (snapshot.child("GameStarted").getValue() != null){
+                    gameStarted = true;
+                    Bundle bundle = new Bundle();
+                    bundle.putString("roomPin", roomPin);
+                    rouletteFragment rouletteFrag = new rouletteFragment();
+                    rouletteFrag.setArguments(bundle);
+                    replaceFragment(rouletteFrag);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -139,24 +147,6 @@ public class gameLobbyFragment extends Fragment {
     }
 
     public void startGame(){
-        gameStarted = true;
         roomRef.child("GameStarted").setValue(true);
-        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                if (snapshot.child("GameStarted").getValue() != null){
-                    Bundle bundle = new Bundle();
-                    bundle.putString("roomPin", roomPin);
-                    rouletteFragment rouletteFrag = new rouletteFragment();
-                    rouletteFrag.setArguments(bundle);
-                    replaceFragment(rouletteFrag);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w("TAG", "Failed to read value.", error.toException());
-            }
-        });
     }
 }

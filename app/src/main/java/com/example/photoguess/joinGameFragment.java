@@ -52,6 +52,9 @@ public class joinGameFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.hasChild("Room_" + enteredRoomPin)){
+                            myRef.child("Room_"+enteredRoomPin).child("Players")
+                                    .child("Player"+(snapshot.child("Room_"+enteredRoomPin)
+                                            .child("Players").getChildrenCount()+1)).child(playerName).setValue(playerName);
                             gameLobbyFragment createFrag = new gameLobbyFragment();
                             Bundle lobbyBundle = new Bundle();
                             lobbyBundle.putString("name", playerName);
@@ -66,7 +69,6 @@ public class joinGameFragment extends Fragment {
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
             }
