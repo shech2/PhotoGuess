@@ -32,6 +32,7 @@ public class gameLobbyFragment extends Fragment {
 
     View view;
 
+    boolean gameStarted = false;
     FragmentGameLobbyBinding binding;
     ListView listView;
     TextView roomPinDisplay;
@@ -84,9 +85,6 @@ public class gameLobbyFragment extends Fragment {
                         }
                     }
                 }
-                players.add("Player1");
-                players.add("Player2");
-                players.add("Player3");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item2, players);
                 listView.setAdapter(adapter);
             }
@@ -126,23 +124,27 @@ public class gameLobbyFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        playersRef.child("Player"+playerPosition).removeValue();
-        playersCount--;
-        if (playersCount <= 0){
-            roomRef.removeValue();
-        }
-        else {
-            countRef.setValue(playersCount);
+        if (!gameStarted) {
+            playersRef.child("Player"+playerPosition).removeValue();
+            playersCount--;
+            if (playersCount <= 0){
+                roomRef.removeValue();
+            }
+            else {
+                countRef.setValue(playersCount);
+            }
         }
         playersRef.removeEventListener(eventListener);
         countRef.removeEventListener(eventListener2);
     }
 
     public void startGame(){
+        gameStarted = true;
         roomRef.child("GameStarted").setValue(true);
         roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (snapshot.child("GameStarted").getValue() != null){
                     Bundle bundle = new Bundle();
                     bundle.putString("roomPin", roomPin);

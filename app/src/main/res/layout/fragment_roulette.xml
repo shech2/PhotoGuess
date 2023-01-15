@@ -18,110 +18,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
 
-    <TextView
-        android:id="@+id/player1NameText"
+    <ListView
+        android:id="@+id/roomListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="151dp"
-        android:layout_marginEnd="151dp"
-        android:text="@string/player1"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/player2NameText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Logo" />
-
-    <TextView
-        android:id="@+id/player2NameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="151dp"
-        android:layout_marginEnd="151dp"
-        android:text="player2"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/player3NameText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player1NameText" />
-
-    <TextView
-        android:id="@+id/player3NameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="151dp"
-        android:layout_marginEnd="151dp"
-        android:text="player3"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player2NameText"
-        app:layout_constraintBottom_toTopOf="@+id/player4NameText"
-        />
-
-    <TextView
-        android:id="@+id/player4NameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="151dp"
-        android:layout_marginEnd="151dp"
-        android:text="player4"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player3NameText" />
-
-    <ImageView
-        android:id="@+id/arrowPlayer1"
-        android:layout_width="111dp"
-        android:layout_height="45dp"
-        android:rotationY="180"
-        android:src="@drawable/leftarrow"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/player1NameText"
-        app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player1NameText" />
-
-    <ImageView
-        android:id="@+id/arrowPlayer2"
-        android:layout_width="111dp"
-        android:layout_height="45dp"
-        android:rotationY="180"
-        android:src="@drawable/leftarrow"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/player2NameText"
-        app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player2NameText" />
-
-    <ImageView
-        android:id="@+id/arrowPlayer3"
-        android:layout_width="111dp"
-        android:layout_height="45dp"
-        android:rotationY="180"
-        android:src="@drawable/leftarrow"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/player3NameText"
-        app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player3NameText" />
-
-    <ImageView
-        android:id="@+id/arrowPlayer4"
-        android:layout_width="111dp"
-        android:layout_height="45dp"
-        android:rotationY="180"
-        android:src="@drawable/leftarrow"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/player4NameText"
-        app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player4NameText" />
-
+        app:layout_constraintTop_toBottomOf="@+id/Logo"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/fragment_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
