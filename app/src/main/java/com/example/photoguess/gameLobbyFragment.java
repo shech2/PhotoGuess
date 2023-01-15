@@ -93,7 +93,8 @@ public class gameLobbyFragment extends Fragment {
         eventListener2 = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                playersCount = snapshot.getValue(Integer.class);
+                playersCount = (int) snapshot.child("Players").getChildrenCount();
+                countRef.setValue(playersCount);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -101,7 +102,7 @@ public class gameLobbyFragment extends Fragment {
             }
         };
         playersRef.addValueEventListener(eventListener);
-        countRef.addValueEventListener(eventListener2);
+        roomRef.addValueEventListener(eventListener2);
 
         roomPinDisplay.setText("Room " + roomPin);
 
