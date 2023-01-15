@@ -123,7 +123,7 @@ public class gameLobbyFragment extends Fragment {
         super.onDestroyView();
         playersRef.child("Player"+playerPosition).removeValue();
         playersCount--;
-        if (playersCount == 0){
+        if (playersCount <= 0){
             roomRef.removeValue();
         }
         else {
