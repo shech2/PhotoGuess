@@ -24,6 +24,9 @@ public class joinGameFragment extends Fragment {
     String playerName;
     FragmentJoinGameBinding binding;
 
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -33,39 +36,39 @@ public class joinGameFragment extends Fragment {
         if(savedInstanceState != null){
             playerName = savedInstanceState.getString("name");
         }
+        database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
+        myRef = database.getReference("Rooms");
         binding = FragmentJoinGameBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.SettingsBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         binding.joinGameButton.setOnClickListener(view -> {
             String enteredRoomPin = binding.editTextGamePIN.getText().toString().trim();
-            if(enteredRoomPin.length() != 5 || !enteredRoomPin.matches("[0-9]+")){
+            if(enteredRoomPin.length() != 5 || !enteredRoomPin.matches("\\d+")){
                 binding.editTextGamePIN.setError("RoomPin must be 5 digits long and only contain numbers");
                 binding.editTextGamePIN.requestFocus();
-            }else{
-                FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-                DatabaseReference myRef = database.getReference("Rooms");
-                 myRef.child("Room_" + binding.editTextGamePIN.getText().toString()).child("Counter")
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            int counter = dataSnapshot.getValue(Integer.class);
-                            counter++;
-                            myRef.child("Room_"+binding.editTextGamePIN.getText().toString()).child("Counter").setValue(counter);
-                            myRef.child("Room_"+binding.editTextGamePIN.getText().toString()).child("Players").child("Player"+counter).child(playerName).setValue(playerName);
+            }
+            else{
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.hasChild("Room_" + enteredRoomPin)){
+                            gameLobbyFragment createFrag = new gameLobbyFragment();
+                            Bundle lobbyBundle = new Bundle();
+                            lobbyBundle.putString("name", playerName);
+                            lobbyBundle.putString("roomPin", enteredRoomPin);
+                            createFrag.setArguments(lobbyBundle);
+                            replaceFragment(createFrag);
                         }
+                        else{
+                            binding.editTextGamePIN.setError("RoomPin does not exist");
+                            binding.editTextGamePIN.requestFocus();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            // Handle error
-                            System.out.println("Error: " + databaseError.getMessage());
-                        }
-                    });
-                gameLobbyFragment createFrag = new gameLobbyFragment();
-                Bundle lobbyBundle = new Bundle();
-                lobbyBundle.putString("name", playerName);
-                lobbyBundle.putString("roomPin", enteredRoomPin);
-                createFrag.setArguments(lobbyBundle);
-                replaceFragment(createFrag);
+                    }
+                });
             }
         });
         return view;
