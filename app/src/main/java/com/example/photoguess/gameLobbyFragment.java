@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.photoguess.databinding.FragmentGameLobbyBinding;
+import com.example.photoguess.databinding.FragmentMenuBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +31,8 @@ import java.util.Objects;
 public class gameLobbyFragment extends Fragment {
 
     View view;
-    Button backBTN;
+
+    FragmentGameLobbyBinding binding;
     ListView listView;
     TextView roomPinDisplay;
     ArrayList<String> players = new ArrayList<>();
@@ -55,8 +58,10 @@ public class gameLobbyFragment extends Fragment {
             roomPin = savedInstanceState.getString("roomPin");
             players.add(name);
         }
-        view = inflater.inflate(R.layout.fragment_game_lobby, container, false);
-        backBTN = view.findViewById(R.id.backButton2);
+        binding = FragmentGameLobbyBinding.inflate(inflater, container, false);
+        view = binding.getRoot();
+        binding.backButton2.setOnClickListener(view -> replaceFragment(new MenuFragment()));
+        binding.startGameButton.setOnClickListener(view -> startGame());
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -79,6 +84,9 @@ public class gameLobbyFragment extends Fragment {
                         }
                     }
                 }
+                players.add("Player1");
+                players.add("Player2");
+                players.add("Player3");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item2, players);
                 listView.setAdapter(adapter);
             }
@@ -105,10 +113,7 @@ public class gameLobbyFragment extends Fragment {
         roomRef.addValueEventListener(eventListener2);
 
         String string = getString(R.string.roomPin, roomPin);
-        roomPinDisplay.setText(string);
-
-        backBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
-        return view;
+        roomPinDisplay.setText(string);        return view;
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -131,5 +136,25 @@ public class gameLobbyFragment extends Fragment {
         }
         playersRef.removeEventListener(eventListener);
         countRef.removeEventListener(eventListener2);
+    }
+
+    public void startGame(){
+        roomRef.child("GameStarted").setValue(true);
+        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("GameStarted").getValue() != null){
+                    Bundle bundle = new Bundle();
+                    bundle.putString("roomPin", roomPin);
+                    rouletteFragment rouletteFrag = new rouletteFragment();
+                    rouletteFrag.setArguments(bundle);
+                    replaceFragment(rouletteFrag);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("TAG", "Failed to read value.", error.toException());
+            }
+        });
     }
 }

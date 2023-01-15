@@ -54,6 +54,19 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="TextContrastCheck" />
 
+    <Button
+        android:id="@+id/startGameButton"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FF0000"
+        android:text="Start"
+        android:textColor="#000000"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/backButton2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
     <TextView
         android:id="@+id/pinDisplay"
         android:layout_width="0dp"
@@ -68,5 +81,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Logo" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
