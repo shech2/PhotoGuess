@@ -103,6 +103,7 @@ public class gameLobbyFragment extends Fragment {
                     gameStarted = true;
                     Bundle bundle = new Bundle();
                     bundle.putString("roomPin", roomPin);
+                    bundle.putInt("playerPosition", playerPosition);
                     rouletteFragment rouletteFrag = new rouletteFragment();
                     rouletteFrag.setArguments(bundle);
                     replaceFragment(rouletteFrag);
