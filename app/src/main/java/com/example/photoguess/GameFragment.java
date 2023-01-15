@@ -90,12 +90,12 @@ public class GameFragment extends Fragment {
 
 
         binding.SPIN.setOnClickListener(v -> {
-            if (currentPos == -1) {
+            if (currentPos == 0) {
                 Toast.makeText(getActivity(), "No player selected", Toast.LENGTH_SHORT).show();
                 return;
             }
             User selectedPlayer = players.get(currentPos);
-            System.out.println(selectedPlayer);
+            System.out.println(selectedPlayer.getName());
         });
         // Return the root view
         return view;
