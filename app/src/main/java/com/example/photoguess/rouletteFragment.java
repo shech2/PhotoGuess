@@ -55,14 +55,15 @@ public class rouletteFragment extends Fragment {
                 }
                 ListAdapter adapter = new ListAdapter(getContext(), playersList);
                 binding.roomListView.setAdapter(adapter);
+                if (playerPosition == 1 && playerCount > 1)
+                    spinRoulette();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
         
-        if (playerPosition == 1)
-            spinRoulette();
+
 
         return view;
     }
@@ -86,6 +87,7 @@ public class rouletteFragment extends Fragment {
                 }
                 incArrowPosition();
                 start += 0.25;
+                System.out.println("Hit");
             }
             try {
                 Thread.sleep(500);
