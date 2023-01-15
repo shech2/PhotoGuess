@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.example.photoguess.databinding.FragmentJoinGameBinding;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class joinGameFragment extends Fragment {
 
@@ -41,7 +44,22 @@ public class joinGameFragment extends Fragment {
             }else {
                 FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
                 DatabaseReference myRef = database.getReference("Rooms");
-                myRef.child("Room_" + enteredRoomPin).child("Players").child(playerName).setValue(playerName);
+                 myRef.child("Room_" + binding.editTextGamePIN.getText().toString()).child("Counter")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int counter = dataSnapshot.getValue(Integer.class);
+                            counter++;
+                            myRef.child("Room_"+binding.editTextGamePIN.getText().toString()).child("Counter").setValue(counter);
+                            myRef.child("Room_"+binding.editTextGamePIN.getText().toString()).child("Players").child("Player"+counter).child(playerName).setValue(playerName);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            // Handle error
+                            System.out.println("Error: " + databaseError.getMessage());
+                        }
+                    });
                 gameLobbyFragment createFrag = new gameLobbyFragment();
                 Bundle lobbyBundle = new Bundle();
                 lobbyBundle.putString("name", playerName);

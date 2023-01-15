@@ -83,12 +83,13 @@ public class MenuFragment extends Fragment {
                         if(name.isEmpty()){
                             binding.editTextTextPersonName.setError("Please enter a name");
                             binding.editTextTextPersonName.requestFocus();
-                        }else {
-                                myRef.child("Room_" + roomPin[0]).child("Players").child(name).setValue(name);
+                        }else{
+                                myRef.child("Room_"+roomPin[0]).child("Counter").setValue(1);
+                                myRef.child("Room_"+roomPin[0]).child("Players").child("Player1").child(name).setValue(name);
                                 gameLobbyFragment createFrag = new gameLobbyFragment();
                                 Bundle lobbyBundle = new Bundle();
-                                lobbyBundle.putString("name", name);
-                                lobbyBundle.putString("roomPin", roomPin[0]);
+                                lobbyBundle.putString("name" , name);
+                                lobbyBundle.putString("roomPin" , roomPin[0]);
                                 createFrag.setArguments(lobbyBundle);
                                 replaceFragment(createFrag);
                         }
