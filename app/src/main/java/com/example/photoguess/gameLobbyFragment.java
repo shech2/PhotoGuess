@@ -101,6 +101,11 @@ public class gameLobbyFragment extends Fragment {
                     playersCount = (int) snapshot.child("Players").getChildrenCount();
                     countRef.setValue(playersCount);
                 }
+                if(Objects.requireNonNull(snapshot.child("Counter").getValue()).toString().equals("1")){
+                    binding.wfpTV.setVisibility(View.VISIBLE);
+                }else{
+                    binding.wfpTV.setVisibility(View.INVISIBLE);
+                }
                 if (snapshot.child("GameStarted").getValue() != null){
                     gameStarted = true;
                     Bundle bundle = new Bundle();
