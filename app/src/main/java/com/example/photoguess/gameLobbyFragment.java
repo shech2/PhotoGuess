@@ -91,8 +91,10 @@ public class gameLobbyFragment extends Fragment {
         eventListener2 = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                playersCount = (int) snapshot.child("Players").getChildrenCount();
-                countRef.setValue(playersCount);
+                if (snapshot.child("Players").getChildrenCount() != 0){
+                    playersCount = (int) snapshot.child("Players").getChildrenCount();
+                    countRef.setValue(playersCount);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

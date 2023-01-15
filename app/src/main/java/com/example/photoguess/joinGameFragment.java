@@ -41,7 +41,7 @@ public class joinGameFragment extends Fragment {
             if(enteredRoomPin.length() != 5 || !enteredRoomPin.matches("[0-9]+")){
                 binding.editTextGamePIN.setError("RoomPin must be 5 digits long and only contain numbers");
                 binding.editTextGamePIN.requestFocus();
-            }else {
+            }else{
                 FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
                 DatabaseReference myRef = database.getReference("Rooms");
                  myRef.child("Room_" + binding.editTextGamePIN.getText().toString()).child("Counter")
