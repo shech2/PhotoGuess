@@ -29,42 +29,58 @@ public class rouletteFragment extends Fragment {
     ArrayList<User> playersList = new ArrayList<>();
     int playerCount;
     int playerPosition;
+    int arrowPosition;
+    int playerSelected;
 
-    int arrowPosition = 1;
+    String sPTest;
     FirebaseDatabase database;
     DatabaseReference roomRef;
+
+    ValueEventListener spinListener;
+
+    ValueEventListener selectorListener;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        assert getArguments() != null;
-        roomPin = getArguments().getString("roomPin");
-        playerPosition = getArguments().getInt("playerPosition");
+        savedInstanceState = this.getArguments();
+        assert savedInstanceState != null;
+        roomPin = savedInstanceState.getString("roomPin");
+        playerPosition = savedInstanceState.getInt("playerPosition");
         binding = FragmentRouletteBinding.inflate(inflater, container, false);
-        view = binding.getRoot();
 
+        view = binding.getRoot();
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
-        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        initialize();
+
+        spinListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                playerCount = (int) snapshot.child("Players").getChildrenCount();
-                for (DataSnapshot pNumber : snapshot.child("Players").getChildren()) {
-                    for (DataSnapshot pName : pNumber.getChildren()) {
-                        playersList.add(new User(Objects.requireNonNull(pName.getValue()).toString()));
-                    }
+                if (snapshot.getValue() != null) {
+                    System.out.println("Player selected!");
                 }
-                ListAdapter adapter = new ListAdapter(getContext(), playersList);
-                binding.roomListView.setAdapter(adapter);
-                if (playerPosition == 1 && playerCount > 1)
-                    spinRoulette();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("Error: " + error);
             }
-        });
-        
+        };
+        selectorListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                System.out.println("Change!");
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        };
+        roomRef.child("DoneSpinning").addValueEventListener(spinListener);
+        roomRef.child("SelectedPlayer").addValueEventListener(selectorListener);
+        arrowPosition = 0;
         return view;
     }
 
@@ -77,7 +93,7 @@ public class rouletteFragment extends Fragment {
         Random rand = new Random();
         int quickTics = rand.nextInt(3) + 3;
         int slowTics = quickTics * 2;
-        int start = 0;
+        float start = 0;
         while (start < slowTics){
             while (start < quickTics){
                 try {
@@ -87,7 +103,6 @@ public class rouletteFragment extends Fragment {
                 }
                 incArrowPosition();
                 start += 0.25;
-                System.out.println("Hit");
             }
             try {
                 Thread.sleep(500);
@@ -95,7 +110,7 @@ public class rouletteFragment extends Fragment {
                 e.printStackTrace();
             }
             incArrowPosition();
-            start += 0.25;
+            start += 0.5;
         }
         try {
             Thread.sleep(1000);
@@ -103,6 +118,9 @@ public class rouletteFragment extends Fragment {
             e.printStackTrace();
         }
         incArrowPosition();
+        playerSelected = arrowPosition;
+        System.out.println("DoneSpinning");
+        roomRef.child("DoneSpinning").setValue(true);
     }
 
     public void incArrowPosition(){
@@ -110,6 +128,36 @@ public class rouletteFragment extends Fragment {
             arrowPosition = 1;
         else
             arrowPosition++;
+        System.out.println("Arrow Position: " + arrowPosition);
         roomRef.child("SelectedPlayer").setValue(arrowPosition);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        roomRef.removeEventListener(spinListener);
+        roomRef.removeEventListener(selectorListener);
+    }
+
+    public void initialize(){
+        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                System.out.println("Data Change");
+                playerCount = (int) snapshot.child("Players").getChildrenCount();
+                for (DataSnapshot pNumber : snapshot.child("Players").getChildren()) {
+                    for (DataSnapshot pName : pNumber.getChildren()) {
+                        playersList.add(new User(Objects.requireNonNull(pName.getValue()).toString()));
+                    }
+                }
+                ListAdapter adapter = new ListAdapter(getContext(), playersList);
+                binding.roomListView.setAdapter(adapter);
+                if (playerPosition == 1)
+                    spinRoulette();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }
