@@ -93,6 +93,7 @@ public class gameLobbyFragment extends Fragment {
         if (playersRef == null) {
             assert false;
             playersRef.getParent().removeValue();
+
         }
         playersRef.removeEventListener(eventListener);
     }

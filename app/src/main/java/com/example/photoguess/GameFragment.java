@@ -90,7 +90,7 @@ public class GameFragment extends Fragment {
 
 
         binding.SPIN.setOnClickListener(v -> {
-            if (currentPos == -1) {
+            if (currentPos == 0) {
                 Toast.makeText(getActivity(), "No player selected", Toast.LENGTH_SHORT).show();
                 return;
             }
