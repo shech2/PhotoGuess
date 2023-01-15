@@ -1,5 +1,6 @@
 package com.example.photoguess;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,10 +34,17 @@ public class gameLobbyFragment extends Fragment {
     TextView roomPinDisplay;
     ArrayList<String> players = new ArrayList<>();
     String name;
+
+    int playerPosition;
     String roomPin;
     ValueEventListener eventListener;
+    ValueEventListener eventListener2;
     DatabaseReference playersRef;
 
+    int playersCount;
+    DatabaseReference roomRef;
+    DatabaseReference countRef;
+    FirebaseDatabase database;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -51,15 +59,25 @@ public class gameLobbyFragment extends Fragment {
         backBTN = view.findViewById(R.id.backButton2);
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-        playersRef = database.getReference("Rooms").child("Room_" + roomPin).child("Players");
+        database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
+        roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        playersRef = roomRef.child("Players");
+        countRef = roomRef.child("Counter");
         eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 players.clear();
                 for (DataSnapshot player : snapshot.getChildren()) {
-                    System.out.println("Player name " + Objects.requireNonNull(player.getValue()));
-                    players.add(player.getValue().toString());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        for (DataSnapshot playerName : player.getChildren()) {
+                            if (playerName.getValue() != null) {
+                                players.add(playerName.getValue().toString());
+                                if (playerName.getValue().toString().equals(name)){
+                                    playerPosition = Integer.parseInt(Objects.requireNonNull(player.getKey()).substring(player.getKey().length() - 1));
+                                }
+                            }
+                        }
+                    }
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item2, players);
                 listView.setAdapter(adapter);
@@ -70,7 +88,19 @@ public class gameLobbyFragment extends Fragment {
                 Log.w("TAG", "Failed to read value.", error.toException());
             }
         };
+        eventListener2 = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                playersCount = (int) snapshot.child("Players").getChildrenCount();
+                countRef.setValue(playersCount);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("TAG", "Failed to read value.", error.toException());
+            }
+        };
         playersRef.addValueEventListener(eventListener);
+        roomRef.addValueEventListener(eventListener2);
 
         String string = getString(R.string.roomPin, roomPin);
         roomPinDisplay.setText(string);
@@ -89,11 +119,15 @@ public class gameLobbyFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        playersRef.child(name).removeValue();
-        if (playersRef == null) {
-            assert false;
-            playersRef.getParent().removeValue();
+        playersRef.child("Player"+playerPosition).removeValue();
+        playersCount--;
+        if (playersCount == 0){
+            roomRef.removeValue();
+        }
+        else {
+            countRef.setValue(playersCount);
         }
         playersRef.removeEventListener(eventListener);
+        countRef.removeEventListener(eventListener2);
     }
 }
