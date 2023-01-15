@@ -44,14 +44,14 @@ public class joinGameFragment extends Fragment {
             }else {
                 FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
                 DatabaseReference myRef = database.getReference("Rooms");
-                 myRef.child("Room_" + gamePinET.getText().toString()).child("Counter")
+                 myRef.child("Room_" + binding.editTextGamePIN.getText().toString()).child("Counter")
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             int counter = dataSnapshot.getValue(Integer.class);
                             counter++;
-                            myRef.child("Room_"+gamePinET.getText().toString()).child("Counter").setValue(counter);
-                            myRef.child("Room_"+gamePinET.getText().toString()).child("Players").child("Player"+counter).child(playerName).setValue(playerName);
+                            myRef.child("Room_"+binding.editTextGamePIN.getText().toString()).child("Counter").setValue(counter);
+                            myRef.child("Room_"+binding.editTextGamePIN.getText().toString()).child("Players").child("Player"+counter).child(playerName).setValue(playerName);
                         }
 
                         @Override
