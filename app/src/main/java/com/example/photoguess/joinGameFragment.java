@@ -14,8 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class joinGameFragment extends Fragment {
 
@@ -44,15 +47,22 @@ public class joinGameFragment extends Fragment {
         joinGameBTN.setOnClickListener(view -> {
             FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
             DatabaseReference myRef = database.getReference("Rooms");
-            System.out.println("Hit1");
-            String counter = myRef.child("Room_" + gamePinET.getText().toString()).child("Counter").getKey();
-            System.out.println("Hit2");
-            Integer.parseInt(counter);
-            System.out.println("Hit3");
-            counter = counter + 1;
+            myRef.child("Room_" + gamePinET.getText().toString()).child("Counter")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int counter = dataSnapshot.getValue(Integer.class);
+                            counter++;
+                            myRef.child("Room_"+gamePinET.getText().toString()).child("Counter").setValue(counter);
+                            myRef.child("Room_"+gamePinET.getText().toString()).child("Players").child("Player"+counter).child(playerName).setValue(playerName);
+                        }
 
-            myRef.child("Room_"+gamePinET.getText().toString()).child("Counter").setValue(counter);
-            myRef.child("Room_"+gamePinET.getText().toString()).child("Players").child(playerName).setValue(playerName,counter);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            // Handle error
+                            System.out.println("Error: " + databaseError.getMessage());
+                        }
+                    });
             gameLobbyFragment createFrag = new gameLobbyFragment();
             Bundle lobbyBundle = new Bundle();
 
