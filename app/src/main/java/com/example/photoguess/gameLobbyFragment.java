@@ -13,12 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.photoguess.databinding.FragmentGameLobbyBinding;
-import com.example.photoguess.databinding.FragmentMenuBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,8 +39,8 @@ public class gameLobbyFragment extends Fragment {
 
     int playerPosition;
     String roomPin;
-    ValueEventListener eventListener;
-    ValueEventListener eventListener2;
+    ValueEventListener playersEventListener;
+    ValueEventListener roomEventListener;
     DatabaseReference playersRef;
 
     int playersCount;
@@ -69,7 +67,7 @@ public class gameLobbyFragment extends Fragment {
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
         playersRef = roomRef.child("Players");
         countRef = roomRef.child("Counter");
-        eventListener = new ValueEventListener() {
+        playersEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 players.clear();
@@ -94,7 +92,7 @@ public class gameLobbyFragment extends Fragment {
                 Log.w("TAG", "Failed to read value.", error.toException());
             }
         };
-        eventListener2 = new ValueEventListener() {
+        roomEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.child("Players").getChildrenCount() != 0){
@@ -110,6 +108,7 @@ public class gameLobbyFragment extends Fragment {
                     gameStarted = true;
                     Bundle bundle = new Bundle();
                     bundle.putString("roomPin", roomPin);
+                    bundle.putInt("playerPosition", playerPosition);
                     rouletteFragment rouletteFrag = new rouletteFragment();
                     rouletteFrag.setArguments(bundle);
                     replaceFragment(rouletteFrag);
@@ -120,8 +119,9 @@ public class gameLobbyFragment extends Fragment {
                 Log.w("TAG", "Failed to read value.", error.toException());
             }
         };
-        playersRef.addValueEventListener(eventListener);
-        roomRef.addValueEventListener(eventListener2);
+
+        playersRef.addValueEventListener(playersEventListener);
+        roomRef.addValueEventListener(roomEventListener);
 
         String string = getString(R.string.roomPin, roomPin);
         roomPinDisplay.setText(string);        return view;
@@ -147,8 +147,8 @@ public class gameLobbyFragment extends Fragment {
                 countRef.setValue(playersCount);
             }
         }
-        playersRef.removeEventListener(eventListener);
-        countRef.removeEventListener(eventListener2);
+        playersRef.removeEventListener(playersEventListener);
+        countRef.removeEventListener(roomEventListener);
     }
 
     public void startGame(){

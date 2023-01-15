@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.photoguess.databinding.ActivityMainBinding;
-
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
