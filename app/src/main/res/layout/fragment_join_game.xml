@@ -20,9 +20,12 @@
             android:background="#FFFFFF"
             app:layout_constraintBottom_toTopOf="@+id/editTextGamePIN"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.666"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/logo"
+            android:contentDescription="@string/logo" />
 
         <EditText
             android:id="@+id/editTextGamePIN"
@@ -31,30 +34,31 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:minHeight="48dp"
-            android:hint="Enter game PIN"
+            android:hint="@string/enter_game_pin"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="" />
 
 
         <Button
             android:id="@+id/joinGameButton"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginTop="100dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="50dp"
             android:backgroundTint="#FF0000"
-            android:text="Join Game"
+            android:text="@string/join_game"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextGamePIN" />
 
         <Button
-            android:id="@+id/backButton"
+            android:id="@+id/SettingsBTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="145dp"
@@ -62,7 +66,7 @@
             android:layout_marginEnd="149dp"
             android:layout_marginBottom="5dp"
             android:backgroundTint="#FF0000"
-            android:text="Back"
+            android:text="@string/back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.551"

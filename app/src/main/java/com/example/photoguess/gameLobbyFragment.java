@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -45,7 +44,6 @@ public class gameLobbyFragment extends Fragment {
     int playersCount;
     DatabaseReference roomRef;
     DatabaseReference countRef;
-
     FirebaseDatabase database;
 
     @Override
@@ -81,8 +79,8 @@ public class gameLobbyFragment extends Fragment {
                         }
                     }
                 }
-                ListAdapter listAdapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item, players);
-                listView.setAdapter(listAdapter);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item2, players);
+                listView.setAdapter(adapter);
             }
 
             @Override
@@ -104,7 +102,8 @@ public class gameLobbyFragment extends Fragment {
         playersRef.addValueEventListener(eventListener);
         roomRef.addValueEventListener(eventListener2);
 
-        roomPinDisplay.setText("Room " + roomPin);
+        String string = getString(R.string.roomPin, roomPin);
+        roomPinDisplay.setText(string);
 
         backBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         return view;

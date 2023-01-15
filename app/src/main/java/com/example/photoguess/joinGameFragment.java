@@ -10,12 +10,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.example.photoguess.databinding.FragmentJoinGameBinding;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -23,10 +21,9 @@ import com.google.firebase.database.ValueEventListener;
 public class joinGameFragment extends Fragment {
 
     View view;
-    Button joinGameBTN;
-    Button backBTN;
     String playerName;
-    EditText gamePinET;
+    FragmentJoinGameBinding binding;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -36,18 +33,18 @@ public class joinGameFragment extends Fragment {
         if(savedInstanceState != null){
             playerName = savedInstanceState.getString("name");
         }
-
-        view = inflater.inflate(R.layout.fragment_join_game, container, false);
-
-        gamePinET = view.findViewById(R.id.editTextGamePIN);
-
-        backBTN = view.findViewById(R.id.backButton);
-        backBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
-        joinGameBTN = view.findViewById(R.id.joinGameButton);
-        joinGameBTN.setOnClickListener(view -> {
-            FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-            DatabaseReference myRef = database.getReference("Rooms");
-            myRef.child("Room_" + gamePinET.getText().toString()).child("Counter")
+        binding = FragmentJoinGameBinding.inflate(inflater, container, false);
+        view = binding.getRoot();
+        binding.SettingsBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
+        binding.joinGameButton.setOnClickListener(view -> {
+            String enteredRoomPin = binding.editTextGamePIN.getText().toString().trim();
+            if(enteredRoomPin.length() != 5 || !enteredRoomPin.matches("[0-9]+")){
+                binding.editTextGamePIN.setError("RoomPin must be 5 digits long and only contain numbers");
+                binding.editTextGamePIN.requestFocus();
+            }else {
+                FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
+                DatabaseReference myRef = database.getReference("Rooms");
+                 myRef.child("Room_" + gamePinET.getText().toString()).child("Counter")
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -63,17 +60,14 @@ public class joinGameFragment extends Fragment {
                             System.out.println("Error: " + databaseError.getMessage());
                         }
                     });
-            gameLobbyFragment createFrag = new gameLobbyFragment();
-            Bundle lobbyBundle = new Bundle();
-
-            lobbyBundle.putString("name" , playerName);
-            lobbyBundle.putString("roomPin" , gamePinET.getText().toString());
-            createFrag.setArguments(lobbyBundle);
-            System.out.println("Hit4");
-
-            replaceFragment(createFrag);
+                gameLobbyFragment createFrag = new gameLobbyFragment();
+                Bundle lobbyBundle = new Bundle();
+                lobbyBundle.putString("name", playerName);
+                lobbyBundle.putString("roomPin", enteredRoomPin);
+                createFrag.setArguments(lobbyBundle);
+                replaceFragment(createFrag);
+            }
         });
-
         return view;
     }
 

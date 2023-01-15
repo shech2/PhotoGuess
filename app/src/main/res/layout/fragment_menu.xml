@@ -22,78 +22,83 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@drawable/logo"
+                android:contentDescription="@string/logo" />
 
             <EditText
                 android:id="@+id/editTextTextPersonName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:ems="10"
+                android:hint="@string/enter_your_name_here"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
-                android:hint="Enter your name here"
                 android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/createGameButton"
-                android:layout_width="300dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="38dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#FF0000"
-                android:text="Create Game"
+                android:text="@string/create_game"
                 app:layout_constraintBottom_toTopOf="@+id/joinGameButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/joinGameButton"
-                android:layout_width="300dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="100dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="50dp"
                 android:backgroundTint="#FF0000"
-                android:text="Join Game"
+                android:text="@string/join_game"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName"
+                tools:ignore="TextContrastCheck" />
 
             <Button
-                android:id="@+id/backButton"
+                android:id="@+id/SettingsBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="145dp"
-                android:layout_marginTop="100dp"
-                android:layout_marginEnd="149dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="20dp"
                 android:backgroundTint="#FF0000"
-                android:text="Settings"
+                android:text="@string/settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/joinGameButton"
-                app:layout_constraintVertical_bias="0.935" />
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TEST"
-                app:layout_constraintBottom_toTopOf="@+id/backButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="70dp"
+                android:backgroundTint="#FF0000"
+                android:text="@string/test"
+                app:layout_constraintBottom_toTopOf="@+id/SettingsBTN"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/joinGameButton" />
+                app:layout_constraintTop_toBottomOf="@+id/joinGameButton"
+                tools:ignore="TextContrastCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
