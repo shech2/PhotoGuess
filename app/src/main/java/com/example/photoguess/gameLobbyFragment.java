@@ -106,6 +106,7 @@ public class gameLobbyFragment extends Fragment {
                 }
                 if (snapshot.child("GameStarted").getValue() != null){
                     gameStarted = true;
+                    roomRef.child("GameStarted").removeValue();
                     Bundle bundle = new Bundle();
                     bundle.putString("roomPin", roomPin);
                     bundle.putInt("playerPosition", playerPosition);
@@ -128,7 +129,7 @@ public class gameLobbyFragment extends Fragment {
     }
 
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentManager fragmentManager = gameLobbyFragment.this.requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
         fragmentTransaction.commit();

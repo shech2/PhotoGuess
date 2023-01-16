@@ -2,6 +2,7 @@
     <string name="app_name">PhotoGuess</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="roomPin">ROOM %1$s</string>
+    <string name="selectedPlayer">%1$d</string>
     <string name="back">Back</string>
     <string name="todo">TODO</string>
     <string name="gallery">Gallery</string>

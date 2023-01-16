@@ -84,8 +84,10 @@ public class MenuFragment extends Fragment {
                             binding.editTextTextPersonName.setError("Please enter a name");
                             binding.editTextTextPersonName.requestFocus();
                         }else{
-                                myRef.child("Room_"+roomPin[0]).child("Counter").setValue(1);
-                                myRef.child("Room_"+roomPin[0]).child("Players").child("Player1").child(name).setValue(name);
+                            myRef.child("Room_"+roomPin[0]).child("Counter").setValue(1);
+                            myRef.child("Room_"+roomPin[0]).child("Players").child("Player1").child(name).setValue(name);
+                            myRef.child("Room_"+roomPin[0]).child("Players").child("Player2").child("David").setValue("David");
+                            myRef.child("Room_"+roomPin[0]).child("Players").child("Player3").child("Mark").setValue("Mark");
                                 gameLobbyFragment createFrag = new gameLobbyFragment();
                                 Bundle lobbyBundle = new Bundle();
                                 lobbyBundle.putString("name" , name);
