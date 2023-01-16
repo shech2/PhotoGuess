@@ -29,7 +29,8 @@ public class rouletteFragment extends Fragment {
     ArrayList<User> playersList = new ArrayList<>();
     int playerCount;
     int playerPosition;
-    int arrowPosition;
+    int arrowPosition = 0;
+    int prevArrowPosition = -1;
     int playerSelected;
 
     String sPTest;
@@ -70,7 +71,12 @@ public class rouletteFragment extends Fragment {
         selectorListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                System.out.println("Change!");
+                if (snapshot.getValue() != null){
+                    binding.selectedTest.setText(snapshot.getValue().toString());
+                    arrowPosition = Integer.parseInt(snapshot.getValue().toString())-1;
+                    toggleArrowVisibility(arrowPosition, prevArrowPosition);
+                    prevArrowPosition = arrowPosition;
+                }
             }
 
             @Override
@@ -102,7 +108,7 @@ public class rouletteFragment extends Fragment {
                     e.printStackTrace();
                 }
                 incArrowPosition();
-                start += 0.25;
+                start += 0.1;
             }
             try {
                 Thread.sleep(500);
@@ -123,12 +129,27 @@ public class rouletteFragment extends Fragment {
         roomRef.child("DoneSpinning").setValue(true);
     }
 
+    private void showArrow(int pos) {
+        view = binding.roomListView.getChildAt(pos);
+        view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
+    }
+
+    private void hideArrow(int pos){
+        view = binding.roomListView.getChildAt(pos);
+        view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
+
+    }
+    private void toggleArrowVisibility(int pos, int prevPos) {
+        if (prevArrowPosition >= 0)
+            hideArrow(prevPos);
+        showArrow(pos);
+    }
+
     public void incArrowPosition(){
         if (arrowPosition == playerCount)
             arrowPosition = 1;
         else
             arrowPosition++;
-        System.out.println("Arrow Position: " + arrowPosition);
         roomRef.child("SelectedPlayer").setValue(arrowPosition);
     }
 
@@ -143,7 +164,6 @@ public class rouletteFragment extends Fragment {
         roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                System.out.println("Data Change");
                 playerCount = (int) snapshot.child("Players").getChildrenCount();
                 for (DataSnapshot pNumber : snapshot.child("Players").getChildren()) {
                     for (DataSnapshot pName : pNumber.getChildren()) {
@@ -152,12 +172,25 @@ public class rouletteFragment extends Fragment {
                 }
                 ListAdapter adapter = new ListAdapter(getContext(), playersList);
                 binding.roomListView.setAdapter(adapter);
-                if (playerPosition == 1)
-                    spinRoulette();
+                if (playerPosition == 1){
+                    runFunctionInNewThread();;
+
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    public class MyRunnable implements Runnable {
+        public void run() {
+            spinRoulette();
+        }
+    }
+
+    public void runFunctionInNewThread() {
+        Thread thread = new Thread(new MyRunnable());
+        thread.start();
     }
 }
