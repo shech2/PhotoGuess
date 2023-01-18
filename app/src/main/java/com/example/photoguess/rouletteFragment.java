@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +56,7 @@ public class rouletteFragment extends Fragment {
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
         initialize();
 
+
         spinListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -86,9 +88,9 @@ public class rouletteFragment extends Fragment {
         };
         roomRef.child("DoneSpinning").addValueEventListener(spinListener);
         roomRef.child("SelectedPlayer").addValueEventListener(selectorListener);
-        arrowPosition = 0;
         return view;
     }
+
 
     private void spinRoulette() {
         try {
@@ -127,6 +129,24 @@ public class rouletteFragment extends Fragment {
         playerSelected = arrowPosition;
         System.out.println("DoneSpinning");
         roomRef.child("DoneSpinning").setValue(true);
+        // Wait for 10 seconds and then transfer to GameFragment
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // Grab the hot name from players list player1 is the host
+        String hostName = playersList.get(playerSelected-1).getName();
+
+        roomRef.child("PhotoUploader").setValue(hostName);
+
+        // Transfer to GameFragment
+        GameFragment gameFragment = new GameFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("roomPin", roomPin);
+        bundle.putString("PhotoUploader", hostName);
+        gameFragment.setArguments(bundle);
+        replaceFragment(gameFragment);
     }
 
     private void showArrow(int pos) {
@@ -173,8 +193,7 @@ public class rouletteFragment extends Fragment {
                 ListAdapter adapter = new ListAdapter(getContext(), playersList);
                 binding.roomListView.setAdapter(adapter);
                 if (playerPosition == 1){
-                    runFunctionInNewThread();;
-
+                    runFunctionInNewThread();
                 }
             }
             @Override
@@ -182,9 +201,23 @@ public class rouletteFragment extends Fragment {
             }
         });
     }
+    // Create Random number between 1 and playerCount
+    private int RandomNum() {
+        Random rand = new Random();
+        int PlayersCount = playersList.size();
+        return rand.nextInt(PlayersCount) + 1;
+    }
+
+
+    private void replaceFragment(Fragment fragment){
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.mainFragmentContainerView, fragment);
+        transaction.commit();
+    }
 
     public class MyRunnable implements Runnable {
         public void run() {
+            arrowPosition = RandomNum();
             spinRoulette();
         }
     }

@@ -87,8 +87,9 @@ public class MenuFragment extends Fragment {
                             myRef.child("Room_"+roomPin[0]).child("Counter").setValue(1);
                             myRef.child("Room_"+roomPin[0]).child("Players").child("Player1").child(name).setValue(name);
                             myRef.child("Room_"+roomPin[0]).child("Players").child("Player2").child("David").setValue("David");
-                            myRef.child("Room_"+roomPin[0]).child("Players").child("Player3").child("Mark").setValue("Mark");
-                                gameLobbyFragment createFrag = new gameLobbyFragment();
+                            myRef.child("Room_"+roomPin[0]).child("Players").child("Player3").child("Moshe").setValue("Moshe");
+
+                            gameLobbyFragment createFrag = new gameLobbyFragment();
                                 Bundle lobbyBundle = new Bundle();
                                 lobbyBundle.putString("name" , name);
                                 lobbyBundle.putString("roomPin" , roomPin[0]);

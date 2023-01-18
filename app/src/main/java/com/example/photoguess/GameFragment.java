@@ -20,12 +20,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.photoguess.databinding.FragmentGameBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
-
-
-
+import java.util.Objects;
 
 
 public class GameFragment extends Fragment {
@@ -33,8 +35,11 @@ public class GameFragment extends Fragment {
     private FragmentGameBinding binding;
     ActivityResultLauncher<Void> takePicture;
     ActivityResultLauncher<String> Gallery;
+    ArrayList<User> playersList = new ArrayList<>();
     View view;
     int currentPos = 0;
+    FirebaseDatabase database;
+    DatabaseReference roomRef;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -64,28 +69,17 @@ public class GameFragment extends Fragment {
 
         // Return the root view of the layout
         binding.BackBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
+        savedInstanceState = this.getArguments();
+        if (savedInstanceState != null) {
+            String roomPin = savedInstanceState.getString("roomPin");
+            System.out.println("roomPin " + roomPin);
+            database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
+            roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        }
+        initialize();
 
-        ArrayList<User> players = new ArrayList<>();
-        players.add(new User("Player 1"));
-        players.add(new User("Player 2"));
-        players.add(new User("Player 3"));
-        players.add(new User("Player 4"));
-
-        ListAdapter adapter = new ListAdapter(getContext(), players);
-        binding.roomShuffle.setAdapter(adapter);
         binding.roomShuffle.setOnItemClickListener((parent, view, position, id) -> {
             currentPos = position;
-            updateArrowVisibility();
-        });
-
-
-        binding.SPIN.setOnClickListener(v -> {
-            if (currentPos == 0) {
-                Toast.makeText(getActivity(), "No player selected", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            User selectedPlayer = players.get(currentPos);
-            System.out.println(selectedPlayer);
         });
         // Return the root view
         return view;
@@ -115,17 +109,26 @@ public class GameFragment extends Fragment {
         MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(), picture, "PhotoGuess", "PhotoGuess");
     }
 
-
-    private void updateArrowVisibility() {
-        for (int i = 0; i < binding.roomShuffle.getChildCount(); i++) {
-            view = binding.roomShuffle.getChildAt(i);
-            if (i == currentPos) {
-                view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
-            } else {
-                view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
+    public void initialize(){
+        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+               int playerCount = (int) snapshot.child("Players").getChildrenCount();
+                for (DataSnapshot pNumber : snapshot.child("Players").getChildren()) {
+                    for (DataSnapshot pName : pNumber.getChildren()) {
+                        playersList.add(new User(Objects.requireNonNull(pName.getValue()).toString()));
+                    }
+                }
+                ListAdapter adapter = new ListAdapter(getContext(), playersList);
+                binding.roomShuffle.setAdapter(adapter);
             }
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
 
 }
