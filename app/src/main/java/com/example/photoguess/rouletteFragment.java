@@ -94,7 +94,7 @@ public class rouletteFragment extends Fragment {
 
     private void spinRoulette() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -129,22 +129,22 @@ public class rouletteFragment extends Fragment {
         playerSelected = arrowPosition;
         System.out.println("DoneSpinning");
         roomRef.child("DoneSpinning").setValue(true);
-        // Wait for 10 seconds and then transfer to GameFragment
+
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // Grab the hot name from players list player1 is the host
-        String hostName = playersList.get(playerSelected-1).getName();
+        // Grab the host name from players list player1 is the host
+        String photoUploader = playersList.get(playerSelected-1).getName();
 
-        roomRef.child("PhotoUploader").setValue(hostName);
+        roomRef.child("PhotoUploader").setValue(photoUploader);
 
         // Transfer to GameFragment
         GameFragment gameFragment = new GameFragment();
         Bundle bundle = new Bundle();
         bundle.putString("roomPin", roomPin);
-        bundle.putString("PhotoUploader", hostName);
+        bundle.putString("PhotoUploader", photoUploader);
         gameFragment.setArguments(bundle);
         replaceFragment(gameFragment);
     }
