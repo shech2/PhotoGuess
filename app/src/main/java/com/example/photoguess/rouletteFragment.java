@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +33,8 @@ public class rouletteFragment extends Fragment {
     int playerPosition;
     int arrowPosition = 0;
     int prevArrowPosition = -1;
-    int playerSelected;
 
-    String sPTest;
+    int photoUploaderInt;
     FirebaseDatabase database;
     DatabaseReference roomRef;
 
@@ -93,70 +93,57 @@ public class rouletteFragment extends Fragment {
 
 
     private void spinRoulette() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Random rand = new Random();
-        int quickTics = rand.nextInt(3) + 3;
+//        SystemClock.sleep(1000);
+        int quickTics = 3;
         int slowTics = quickTics * 2;
         float start = 0;
         while (start < slowTics){
             while (start < quickTics){
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                SystemClock.sleep(250);
                 incArrowPosition();
-                start += 0.1;
+                start += 0.5;
             }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            SystemClock.sleep(500);
             incArrowPosition();
             start += 0.5;
         }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        incArrowPosition();
-        playerSelected = arrowPosition;
-        System.out.println("DoneSpinning");
-        roomRef.child("DoneSpinning").setValue(true);
+//        SystemClock.sleep(1000);
+        while (arrowPosition != photoUploaderInt)
+            incArrowPosition();
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        SystemClock.sleep(5000);
         // Grab the host name from players list player1 is the host
-        String photoUploader = playersList.get(playerSelected-1).getName();
 
-        roomRef.child("PhotoUploader").setValue(photoUploader);
-
-        // Transfer to GameFragment
-        GameFragment gameFragment = new GameFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("roomPin", roomPin);
-        bundle.putString("PhotoUploader", photoUploader);
-        gameFragment.setArguments(bundle);
-        replaceFragment(gameFragment);
+//
+//        // Transfer to GameFragment
+//        GameFragment gameFragment = new GameFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("roomPin", roomPin);
+//        bundle.putString("PhotoUploader", photoUploader);
+//        gameFragment.setArguments(bundle);
+//        replaceFragment(gameFragment);
     }
 
     private void showArrow(int pos) {
         view = binding.roomListView.getChildAt(pos);
-        view.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
+        if (view != null) {
+            View arrow = view.findViewById(R.id.arrow);
+            if (arrow != null) {
+                arrow.setVisibility(View.VISIBLE);
+
+            }
+        }
     }
 
     private void hideArrow(int pos){
         view = binding.roomListView.getChildAt(pos);
-        view.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
+        if (view != null) {
+            View arrow = view.findViewById(R.id.arrow);
+            if (arrow != null) {
+                arrow.setVisibility(View.INVISIBLE);
+
+            }
+        }
 
     }
     private void toggleArrowVisibility(int pos, int prevPos) {
@@ -166,11 +153,15 @@ public class rouletteFragment extends Fragment {
     }
 
     public void incArrowPosition(){
+        if (arrowPosition > 0)
+            prevArrowPosition = arrowPosition;
         if (arrowPosition == playerCount)
             arrowPosition = 1;
         else
             arrowPosition++;
-        roomRef.child("SelectedPlayer").setValue(arrowPosition);
+        System.out.println("Arrow position: " + arrowPosition);
+        binding.selectedTest.setText(String.valueOf(arrowPosition));
+        toggleArrowVisibility(arrowPosition, prevArrowPosition);
     }
 
     @Override
@@ -190,22 +181,23 @@ public class rouletteFragment extends Fragment {
                         playersList.add(new User(Objects.requireNonNull(pName.getValue()).toString()));
                     }
                 }
+                photoUploaderInt = Integer.parseInt(Objects.requireNonNull(snapshot.child("PhotoUploader").getValue()).toString().charAt(6) + "");
+                System.out.println("PhotoUploader: " + photoUploaderInt);
                 ListAdapter adapter = new ListAdapter(getContext(), playersList);
                 binding.roomListView.setAdapter(adapter);
-                if (playerPosition == 1){
-                    runFunctionInNewThread();
-                }
+                spinRoulette();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
+
         });
+
     }
     // Create Random number between 1 and playerCount
     private int RandomNum() {
         Random rand = new Random();
-        int PlayersCount = playersList.size();
-        return rand.nextInt(PlayersCount) + 1;
+        return rand.nextInt(playerCount) + 1;
     }
 
 
@@ -213,17 +205,5 @@ public class rouletteFragment extends Fragment {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.mainFragmentContainerView, fragment);
         transaction.commit();
-    }
-
-    public class MyRunnable implements Runnable {
-        public void run() {
-            arrowPosition = RandomNum();
-            spinRoulette();
-        }
-    }
-
-    public void runFunctionInNewThread() {
-        Thread thread = new Thread(new MyRunnable());
-        thread.start();
     }
 }
