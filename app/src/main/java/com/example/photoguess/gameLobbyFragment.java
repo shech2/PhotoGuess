@@ -1,5 +1,7 @@
 package com.example.photoguess;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -125,7 +127,8 @@ public class gameLobbyFragment extends Fragment {
         roomRef.addValueEventListener(roomEventListener);
 
         String string = getString(R.string.roomPin, roomPin);
-        roomPinDisplay.setText(string);        return view;
+        roomPinDisplay.setText(string);
+        return view;
     }
 
     private void replaceFragment(Fragment fragment) {
