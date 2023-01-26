@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.SystemClock;
@@ -20,7 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 
 public class rouletteFragment extends Fragment {
 
@@ -91,6 +91,9 @@ public class rouletteFragment extends Fragment {
         return view;
     }
 
+    // outer thread that updates main thread. maybe use canvas instead of imageview
+    // check our Model, main handler
+    // check surface view / canvas
 
     private void spinRoulette() {
 //        SystemClock.sleep(1000);
@@ -111,17 +114,10 @@ public class rouletteFragment extends Fragment {
         while (arrowPosition != photoUploaderInt)
             incArrowPosition();
 
-//        SystemClock.sleep(5000);
+        SystemClock.sleep(5000);
         // Grab the host name from players list player1 is the host
 
-//
-//        // Transfer to GameFragment
-//        GameFragment gameFragment = new GameFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putString("roomPin", roomPin);
-//        bundle.putString("PhotoUploader", photoUploader);
-//        gameFragment.setArguments(bundle);
-//        replaceFragment(gameFragment);
+
     }
 
     private void showArrow(int pos) {
@@ -186,6 +182,8 @@ public class rouletteFragment extends Fragment {
                 ListAdapter adapter = new ListAdapter(getContext(), playersList);
                 binding.roomListView.setAdapter(adapter);
                 spinRoulette();
+                nextFragment();
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -194,16 +192,23 @@ public class rouletteFragment extends Fragment {
         });
 
     }
-    // Create Random number between 1 and playerCount
-    private int RandomNum() {
-        Random rand = new Random();
-        return rand.nextInt(playerCount) + 1;
+
+    private void nextFragment() {
+        if (playerPosition == photoUploaderInt) {
+            PhotoPickerFragment photoPickerFragment = new PhotoPickerFragment();
+            replaceFragment(photoPickerFragment);
+        }else{
+            WaitingRoomFragment waitingRoomFragment = new WaitingRoomFragment();
+            replaceFragment(waitingRoomFragment);
+        }
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = rouletteFragment.this.requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
+        fragmentTransaction.commit();
     }
 
 
-    private void replaceFragment(Fragment fragment){
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.mainFragmentContainerView, fragment);
-        transaction.commit();
-    }
 }
