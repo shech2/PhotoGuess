@@ -24,8 +24,11 @@ import android.widget.Toast;
 import com.example.photoguess.databinding.FragmentPhotoPickerBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -39,11 +42,10 @@ public class PhotoPickerFragment extends Fragment {
     ActivityResultLauncher<String> gallery;
     DatabaseReference roomRef;
     FirebaseDatabase database;
-
     FirebaseStorage storage;
     StorageReference storageRef;
     String roomPin;
-
+    ValueEventListener timeLeftEventListener;
     boolean photoChanged = false;
 
     @Override
@@ -84,6 +86,37 @@ public class PhotoPickerFragment extends Fragment {
                     }
                 }
             );
+        runThread();
+        timeLeftEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int timeLeft = snapshot.getValue(Integer.class);
+                binding.TimerTV.setText(String.valueOf(timeLeft));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        // The event listener is ON THE CHILD!!!!
+        roomRef.child("Time Left").addValueEventListener(timeLeftEventListener);
+
         return view;
+    }
+
+    public void runThread() {
+        new Thread(() -> {
+            int counter = 30;
+            while (counter > 0) {
+                try {
+                    Thread.sleep(1000);
+                    counter--;
+                    roomRef.child("Time Left").setValue(counter);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

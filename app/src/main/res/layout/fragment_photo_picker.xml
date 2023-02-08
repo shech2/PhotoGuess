@@ -26,17 +26,16 @@
     <TextView
         android:id="@+id/Timer"
         android:layout_width="112dp"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="50dp"
         android:text=" Time left:"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/uploadPhotoImage"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/TimerTV"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.251" />
+        app:layout_constraintVertical_bias="0.194" />
 
     <ImageView
         android:id="@+id/TimerView"
@@ -58,7 +57,7 @@
     <TextView
         android:id="@+id/TimerTV"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_marginEnd="130dp"
         android:text="30"
         android:textSize="24sp"
@@ -71,11 +70,10 @@
     <Button
         android:id="@+id/uploadPhotoToFirebase"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="Upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/uploadPhotoImage"
         app:layout_constraintVertical_bias="0.136" />
