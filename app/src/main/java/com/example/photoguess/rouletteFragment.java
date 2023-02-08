@@ -194,11 +194,15 @@ public class rouletteFragment extends Fragment {
     }
 
     private void nextFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("roomPin", roomPin);
         if (playerPosition == photoUploaderInt) {
             PhotoPickerFragment photoPickerFragment = new PhotoPickerFragment();
+            photoPickerFragment.setArguments(bundle);
             replaceFragment(photoPickerFragment);
         }else{
             WaitingRoomFragment waitingRoomFragment = new WaitingRoomFragment();
+            waitingRoomFragment.setArguments(bundle);
             replaceFragment(waitingRoomFragment);
         }
     }
