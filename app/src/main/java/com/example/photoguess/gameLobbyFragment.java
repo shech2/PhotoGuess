@@ -157,6 +157,7 @@ public class gameLobbyFragment extends Fragment {
 
     public void startGame(){
         setRandomUploader();
+        roomRef.child("Time Left").setValue(30);
         roomRef.child("GameStarted").setValue(true);
     }
 
