@@ -162,8 +162,8 @@ public class gameLobbyFragment extends Fragment {
     }
 
     public void setRandomUploader(){
-        roomRef.child("PhotoUploader").setValue("Player1");
-//        int random = (int) (Math.random() * playersCount + 1);
-//        roomRef.child("PhotoUploader").setValue("Player"+random);
+//        roomRef.child("PhotoUploader").setValue("Player1");
+        int random = (int) (Math.random() * playersCount + 1);
+        roomRef.child("PhotoUploader").setValue("Player"+random);
     }
 }

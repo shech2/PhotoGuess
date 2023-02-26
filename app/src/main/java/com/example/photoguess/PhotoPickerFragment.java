@@ -78,7 +78,7 @@ public class PhotoPickerFragment extends Fragment {
                         UploadTask uploadTask = storageRef.putBytes(data);
                         uploadTask.addOnFailureListener(exception -> Toast.makeText(getContext(), "Upload unsuccessful", Toast.LENGTH_SHORT).show()).addOnSuccessListener(taskSnapshot -> {
                             Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
-                            roomRef.child("photoUploaded").setValue(true);
+                            roomRef.child("Photo Uploaded").setValue(true);
                         });
                     }
                     else {

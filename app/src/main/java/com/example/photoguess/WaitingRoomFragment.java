@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +28,10 @@ public class WaitingRoomFragment extends Fragment {
     View view;
     DatabaseReference roomRef;
     FirebaseDatabase database;
+
     String roomPin;
     ValueEventListener timeLeftEventListener;
+    ValueEventListener gameReady;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,8 +55,38 @@ public class WaitingRoomFragment extends Fragment {
 
             }
         };
+        gameReady = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("roomPin", roomPin);
+                    ActivePlayersFragment activePlayersFragment = new ActivePlayersFragment();
+                    activePlayersFragment.setArguments(bundle);
+                    replaceFragment(activePlayersFragment);
+                }
+            }
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
         // The event listener is ON THE CHILD!!!!
         roomRef.child("Time Left").addValueEventListener(timeLeftEventListener);
+        roomRef.child("Photo Uploaded").addValueEventListener(gameReady);
         return view;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = WaitingRoomFragment.this.requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+        roomRef.child("Time Left").removeEventListener(timeLeftEventListener);
+        roomRef.child("Photo Uploaded").removeEventListener(gameReady);
     }
 }

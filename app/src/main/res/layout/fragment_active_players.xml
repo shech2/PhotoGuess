@@ -6,42 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".ActivePlayersFragment">
 
-    <TextView
-        android:id="@+id/timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time Left : 00:30"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/displayedImage"
+        android:layout_width="403dp"
+        android:layout_height="302dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.184" />
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="_ _ _ _ _ _   _ _ _ _ _ _ _            _ _ _ _  _ _ _    _ _ _ "
+        android:textAlignment="center"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/wordGuessButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/displayedImage" />
 
     <ImageView
-        android:id="@+id/timerView"
-        android:layout_width="60dp"
-        android:layout_height="38dp"
-        android:scrollbarSize="20dp"
-        android:src="@android:drawable/ic_lock_idle_alarm"
-        app:layout_constraintBottom_toTopOf="@+id/timer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.366" />
-
-    <TextView
-        android:id="@+id/waitingRoomTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Please wait nimi is choosing a photo"
+        android:id="@+id/wordGuessButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/fullword"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timer"
-        app:layout_constraintVertical_bias="0.246" />
+        app:layout_constraintEnd_toStartOf="@+id/letterGuessButton"
+        app:layout_constraintStart_toEndOf="@+id/skipTurnButton"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
+    <ImageView
+        android:id="@+id/letterGuessButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/word"
+        app:layout_constraintBottom_toBottomOf="@+id/wordGuessButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wordGuessButton"
+        app:layout_constraintTop_toTopOf="@+id/wordGuessButton" />
+
+    <ImageView
+        android:id="@+id/skipTurnButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="39dp"
+        android:src="@drawable/skippingrope"
+        app:layout_constraintBottom_toBottomOf="@+id/wordGuessButton"
+        app:layout_constraintEnd_toStartOf="@+id/wordGuessButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/wordGuessButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
