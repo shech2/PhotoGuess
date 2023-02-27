@@ -171,4 +171,8 @@ public class ActivePlayersFragment extends Fragment {
         }
         return true;
     }
+
+    //TODO: Add sub-folder "progress" once a game takes place.
+    // The sub-folder will hold information such as used letters, guesses,
+    // board messages, player turn, turn time, etc.
 }
