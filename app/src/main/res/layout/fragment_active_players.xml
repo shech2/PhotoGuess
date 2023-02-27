@@ -6,44 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".ActivePlayersFragment">
 
+    <TextView
+        android:id="@+id/MessageBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Message Board"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/displayedImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.194" />
+
     <ImageView
         android:id="@+id/displayedImage"
         android:layout_width="0dp"
         android:layout_height="302dp"
         android:layout_marginTop="10dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/hangmanText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@id/MessageBoard"
+        tools:src="@drawable/questionmark" />
 
     <TextView
         android:id="@+id/hangmanText"
-        android:layout_width="400dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
         android:letterSpacing="0.2"
         android:text="___ __ ______ __ _____"
         android:textAlignment="center"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/wordGuessButton"
+        app:layout_constraintBottom_toTopOf="@+id/guessText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/displayedImage" />
 
     <ImageView
-        android:id="@+id/wordGuessButton"
+        android:id="@+id/fullGuessButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/fullword"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/fullGuessText"
         app:layout_constraintEnd_toStartOf="@+id/letterGuessButton"
         app:layout_constraintStart_toEndOf="@+id/skipTurnButton"
-        app:layout_constraintTop_toBottomOf="@+id/hangmanText" />
+        app:layout_constraintTop_toBottomOf="@+id/guessText" />
 
     <ImageView
         android:id="@+id/letterGuessButton"
@@ -52,10 +65,10 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/word"
-        app:layout_constraintBottom_toBottomOf="@+id/wordGuessButton"
+        app:layout_constraintBottom_toBottomOf="@+id/fullGuessButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wordGuessButton"
-        app:layout_constraintTop_toTopOf="@+id/wordGuessButton" />
+        app:layout_constraintStart_toEndOf="@+id/fullGuessButton"
+        app:layout_constraintTop_toTopOf="@+id/fullGuessButton" />
 
     <ImageView
         android:id="@+id/skipTurnButton"
@@ -64,8 +77,53 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="39dp"
         android:src="@drawable/skippingrope"
-        app:layout_constraintBottom_toBottomOf="@+id/wordGuessButton"
-        app:layout_constraintEnd_toStartOf="@+id/wordGuessButton"
+        app:layout_constraintBottom_toBottomOf="@+id/fullGuessButton"
+        app:layout_constraintEnd_toStartOf="@+id/fullGuessButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/wordGuessButton" />
+        app:layout_constraintTop_toTopOf="@+id/fullGuessButton" />
+
+    <TextView
+        android:id="@+id/fullGuessText"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="FULL GUESS"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/fullGuessButton"
+        app:layout_constraintStart_toStartOf="@+id/fullGuessButton"
+        app:layout_constraintTop_toBottomOf="@+id/fullGuessButton" />
+
+    <TextView
+        android:id="@+id/skipTurnText"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="SKIP TURN"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/skipTurnButton"
+        app:layout_constraintStart_toStartOf="@+id/skipTurnButton"
+        app:layout_constraintTop_toBottomOf="@+id/skipTurnButton" />
+
+    <TextView
+        android:id="@+id/letterGuessText"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="LETTER GUESS"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/letterGuessButton"
+        app:layout_constraintStart_toStartOf="@+id/letterGuessButton"
+        app:layout_constraintTop_toBottomOf="@+id/letterGuessButton" />
+
+    <EditText
+        android:id="@+id/guessText"
+        android:layout_width="210dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="5dp"
+        android:ems="10"
+        android:hint="Enter your guess"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/fullGuessButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hangmanText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
