@@ -80,6 +80,9 @@ public class gameLobbyFragment extends Fragment {
                                 players.add(playerName.getValue().toString());
                                 if (playerName.getValue().toString().equals(name)){
                                     playerPosition = Integer.parseInt(Objects.requireNonNull(player.getKey()).substring(player.getKey().length() - 1));
+                                    if (playerPosition == 1){
+                                        binding.startGameButton.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
                         }
@@ -162,8 +165,8 @@ public class gameLobbyFragment extends Fragment {
     }
 
     public void setRandomUploader(){
-//        roomRef.child("PhotoUploader").setValue("Player1");
-        int random = (int) (Math.random() * playersCount + 1);
-        roomRef.child("PhotoUploader").setValue("Player"+random);
+        roomRef.child("PhotoUploader").setValue("Player1");
+//        int random = (int) (Math.random() * playersCount + 1);
+//        roomRef.child("PhotoUploader").setValue("Player"+random);
     }
 }
