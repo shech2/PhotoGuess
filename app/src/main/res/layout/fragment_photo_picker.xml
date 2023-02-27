@@ -13,10 +13,10 @@
         android:layout_width="410dp"
         android:layout_height="230dp"
         android:layout_alignParentStart="false"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="39dp"
         android:background="#FFFFFF"
         android:contentDescription="@string/logo"
-        app:layout_constraintBottom_toTopOf="@+id/uploadPhotoToFirebase"
+        app:layout_constraintBottom_toTopOf="@+id/captionText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +75,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadPhotoImage"
+        app:layout_constraintTop_toBottomOf="@+id/captionText"
         app:layout_constraintVertical_bias="0.136" />
 
     <ImageView
@@ -97,5 +97,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/uploadPhotoToFirebase"
         app:layout_constraintVertical_bias="0.448" />
+
+    <EditText
+        android:id="@+id/captionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="102dp"
+        android:layout_marginEnd="100dp"
+        android:ems="10"
+        android:hint="Caption your photo!"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/uploadPhotoToFirebase"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uploadPhotoImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

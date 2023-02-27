@@ -28,8 +28,6 @@ public class MenuFragment extends Fragment {
 
     View view;
     FragmentMenuBinding binding;
-    FirebaseStorage storage;
-    StorageReference storageRef;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,17 +39,6 @@ public class MenuFragment extends Fragment {
 
         binding.joinGameButton.setOnClickListener(view -> joinRoom());
         binding.test.setOnClickListener(view -> replaceFragment(new GameFragment()));
-//        storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
-//        storageRef = storage.getReference().child("Room_10323");
-//        String imageName = "Room_10323.jpeg";
-//        StorageReference imageRef = storageRef.child(imageName);
-//        final long ONE_MEGABYTE = 1024 * 1024;
-//        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//            binding.displayedImage.setImageBitmap(bitmap);
-//        }).addOnFailureListener(exception -> {
-//            // Handle any errors
-//        });
 
         return view;
     }
