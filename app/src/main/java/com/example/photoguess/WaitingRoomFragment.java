@@ -28,7 +28,8 @@ public class WaitingRoomFragment extends Fragment {
     View view;
     DatabaseReference roomRef;
     FirebaseDatabase database;
-
+    int timeLeft = 30;
+    boolean gameStarting = false;
     String roomPin;
     ValueEventListener timeLeftEventListener;
     ValueEventListener gameReady;
@@ -46,8 +47,18 @@ public class WaitingRoomFragment extends Fragment {
         timeLeftEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int timeLeft = snapshot.getValue(Integer.class);
+                timeLeft = snapshot.getValue(Integer.class);
+                if (timeLeft <= 3 && gameStarting) {
+                    binding.Timer.setText("Game will start in: ");
+                }
                 binding.TimerTV.setText(String.valueOf(timeLeft));
+                if (timeLeft == 0 && gameStarting) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("roomPin", roomPin);
+                    ActivePlayersFragment activePlayersFragment = new ActivePlayersFragment();
+                    activePlayersFragment.setArguments(bundle);
+                    replaceFragment(activePlayersFragment);
+                }
             }
 
             @Override
@@ -59,11 +70,7 @@ public class WaitingRoomFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue() != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("roomPin", roomPin);
-                    ActivePlayersFragment activePlayersFragment = new ActivePlayersFragment();
-                    activePlayersFragment.setArguments(bundle);
-                    replaceFragment(activePlayersFragment);
+                    gameStarting = true;
                 }
             }
             public void onCancelled(@NonNull DatabaseError error) {

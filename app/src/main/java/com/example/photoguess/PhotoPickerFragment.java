@@ -47,6 +47,8 @@ public class PhotoPickerFragment extends Fragment {
     String roomPin;
     ValueEventListener timeLeftEventListener;
     boolean photoChanged = false;
+    boolean gameStarting = false;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -79,6 +81,8 @@ public class PhotoPickerFragment extends Fragment {
                         uploadTask.addOnFailureListener(exception -> Toast.makeText(getContext(), "Upload unsuccessful", Toast.LENGTH_SHORT).show()).addOnSuccessListener(taskSnapshot -> {
                             Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
                             roomRef.child("Photo Uploaded").setValue(true);
+                            gameStarting = true;
+                            binding.Timer.setText("Game will start in: ");
                         });
                     }
                     else {
@@ -110,6 +114,10 @@ public class PhotoPickerFragment extends Fragment {
             int counter = 30;
             while (counter > 0) {
                 try {
+                    if (gameStarting){
+                        counter = 3;
+                        gameStarting = false;
+                    }
                     Thread.sleep(1000);
                     counter--;
                     roomRef.child("Time Left").setValue(counter);
@@ -118,5 +126,6 @@ public class PhotoPickerFragment extends Fragment {
                 }
             }
         }).start();
+
     }
 }
