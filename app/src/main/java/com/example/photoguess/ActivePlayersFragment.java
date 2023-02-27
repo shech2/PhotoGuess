@@ -2,6 +2,8 @@ package com.example.photoguess;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -46,6 +48,8 @@ public class ActivePlayersFragment extends Fragment {
         storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             binding.displayedImage.setImageBitmap(bitmap);
+            binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(100, 100, Shader.TileMode.MIRROR));
+            binding.displayedImage.setVisibility(View.VISIBLE);
         }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download test", Toast.LENGTH_SHORT).show());
 
 
