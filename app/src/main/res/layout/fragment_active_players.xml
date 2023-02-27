@@ -12,7 +12,7 @@
         android:layout_height="302dp"
         android:layout_marginTop="10dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintBottom_toTopOf="@+id/hangmanText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,12 +20,13 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/hangmanText"
         android:layout_width="400dp"
         android:layout_height="200dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:text="_ _ _ _ _ _   _ _ _ _ _ _ _            _ _ _ _  _ _ _    _ _ _ "
+        android:letterSpacing="0.2"
+        android:text="___ __ ______ __ _____"
         android:textAlignment="center"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/wordGuessButton"
@@ -42,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/letterGuessButton"
         app:layout_constraintStart_toEndOf="@+id/skipTurnButton"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/hangmanText" />
 
     <ImageView
         android:id="@+id/letterGuessButton"

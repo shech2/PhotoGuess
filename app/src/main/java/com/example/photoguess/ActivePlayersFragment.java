@@ -17,8 +17,11 @@ import android.widget.Toast;
 import com.example.photoguess.databinding.FragmentActivePlayersBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -27,6 +30,11 @@ public class ActivePlayersFragment extends Fragment {
     FragmentActivePlayersBinding binding;
     View view;
     String roomPin;
+
+    String photoCaptionText;
+    char[] photoCaptionArray;
+    char[] guessingArray;
+    String guessingArrayString;
     DatabaseReference roomRef;
     FirebaseDatabase database;
     FirebaseStorage storage;
@@ -43,6 +51,21 @@ public class ActivePlayersFragment extends Fragment {
         view = binding.getRoot();
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        roomRef.child("Caption").addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                photoCaptionText = snapshot.getValue(String.class);
+                assert photoCaptionText != null;
+                photoCaptionArray = photoCaptionText.toCharArray();
+                guessingArray = new char[photoCaptionArray.length];
+                underscoreCreator();
+                guessingArrayString = new String(guessingArray);
+                binding.hangmanText.setText(guessingArrayString);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
         storageRef = storage.getReference().child("Room_" + roomPin);
         storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
@@ -55,5 +78,15 @@ public class ActivePlayersFragment extends Fragment {
 
 
         return view;
+    }
+
+    public void underscoreCreator(){
+        for (int i = 0; i < photoCaptionArray.length; i++) {
+            if (Character.isLetter(photoCaptionArray[i])) {
+                guessingArray[i] = '_';
+            } else {
+                guessingArray[i] = ' ';
+            }
+        }
     }
 }
