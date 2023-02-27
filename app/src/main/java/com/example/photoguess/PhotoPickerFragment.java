@@ -68,6 +68,15 @@ public class PhotoPickerFragment extends Fragment {
             photoChanged = true;
         });
 
+        binding.download.setOnClickListener(view -> {
+            storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
+            storageRef = storage.getReference().child("Room_" + roomPin);
+            storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                binding.testDownloadImage.setImageBitmap(bitmap);
+            }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download test", Toast.LENGTH_SHORT).show());
+        });
+
         binding.uploadPhotoImage.setOnClickListener(view -> gallery.launch("image/*"));
         binding.uploadPhotoToFirebase.setOnClickListener(view -> {
                     if (photoChanged) {

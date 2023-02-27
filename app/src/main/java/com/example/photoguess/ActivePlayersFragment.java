@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.photoguess.databinding.FragmentActivePlayersBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,15 +43,11 @@ public class ActivePlayersFragment extends Fragment {
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
         storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
         storageRef = storage.getReference().child("Room_" + roomPin);
-        String imageName = "Room_"+roomPin+".jpg";
-        StorageReference imageRef = storageRef.child(imageName);
-        final long ONE_MEGABYTE = 1024 * 1024;
-        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+        storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             binding.displayedImage.setImageBitmap(bitmap);
-        }).addOnFailureListener(exception -> {
-            // Handle any errors
-        });
+        }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download test", Toast.LENGTH_SHORT).show());
+
 
 
         return view;

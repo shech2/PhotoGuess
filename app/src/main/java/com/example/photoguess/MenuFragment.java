@@ -1,5 +1,7 @@
 package com.example.photoguess;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 import java.util.Random;
@@ -24,6 +28,8 @@ public class MenuFragment extends Fragment {
 
     View view;
     FragmentMenuBinding binding;
+    FirebaseStorage storage;
+    StorageReference storageRef;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,7 +41,17 @@ public class MenuFragment extends Fragment {
 
         binding.joinGameButton.setOnClickListener(view -> joinRoom());
         binding.test.setOnClickListener(view -> replaceFragment(new GameFragment()));
-
+//        storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
+//        storageRef = storage.getReference().child("Room_10323");
+//        String imageName = "Room_10323.jpeg";
+//        StorageReference imageRef = storageRef.child(imageName);
+//        final long ONE_MEGABYTE = 1024 * 1024;
+//        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//            binding.displayedImage.setImageBitmap(bitmap);
+//        }).addOnFailureListener(exception -> {
+//            // Handle any errors
+//        });
 
         return view;
     }
