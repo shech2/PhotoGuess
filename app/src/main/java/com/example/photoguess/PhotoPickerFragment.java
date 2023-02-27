@@ -47,6 +47,8 @@ public class PhotoPickerFragment extends Fragment {
     String roomPin;
     ValueEventListener timeLeftEventListener;
     boolean photoChanged = false;
+    boolean gameStarting = false;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -59,16 +61,25 @@ public class PhotoPickerFragment extends Fragment {
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
         view = binding.getRoot();
 
-
         ActivityResultContracts.GetContent getContentContract = new ActivityResultContracts.GetContent();
         gallery = registerForActivityResult(getContentContract, result -> {
             binding.uploadPhotoImage.setImageURI(result);
             photoChanged = true;
         });
 
+        binding.download.setOnClickListener(view -> {
+            storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
+            storageRef = storage.getReference().child("Room_" + roomPin);
+            storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                binding.testDownloadImage.setImageBitmap(bitmap);
+            }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download test", Toast.LENGTH_SHORT).show());
+        });
+
         binding.uploadPhotoImage.setOnClickListener(view -> gallery.launch("image/*"));
         binding.uploadPhotoToFirebase.setOnClickListener(view -> {
-                    if (photoChanged) {
+                    String captionText = binding.captionText.getText().toString().trim();
+                    if (photoChanged && isAlphabeticalEnglish(captionText)) {
                         Bitmap bitmap = ((BitmapDrawable) binding.uploadPhotoImage.getDrawable()).getBitmap();
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -78,7 +89,10 @@ public class PhotoPickerFragment extends Fragment {
                         UploadTask uploadTask = storageRef.putBytes(data);
                         uploadTask.addOnFailureListener(exception -> Toast.makeText(getContext(), "Upload unsuccessful", Toast.LENGTH_SHORT).show()).addOnSuccessListener(taskSnapshot -> {
                             Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
-                            roomRef.child("photoUploaded").setValue(true);
+                            roomRef.child("Photo Uploaded").setValue(true);
+                            roomRef.child("Caption").setValue(captionText.toUpperCase());
+                            gameStarting = true;
+                            binding.Timer.setText("Game will start in: ");
                         });
                     }
                     else {
@@ -110,6 +124,10 @@ public class PhotoPickerFragment extends Fragment {
             int counter = 30;
             while (counter > 0) {
                 try {
+                    if (gameStarting){
+                        counter = 3;
+                        gameStarting = false;
+                    }
                     Thread.sleep(1000);
                     counter--;
                     roomRef.child("Time Left").setValue(counter);
@@ -118,5 +136,28 @@ public class PhotoPickerFragment extends Fragment {
                 }
             }
         }).start();
+
     }
+
+    public boolean isAlphabeticalEnglish(String text) {
+        if (text == null || text.isEmpty()) {
+            binding.captionText.setError("Please enter a caption");
+            binding.captionText.requestFocus();
+            return false;
+        }
+        if (text.trim().length() > 30){
+            binding.captionText.setError("Caption is too long");
+            binding.captionText.requestFocus();
+            return false;
+        }
+        for (char c : text.toCharArray()) {
+            if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
+                binding.captionText.setError("Please enter an alphabetical-only caption");
+                binding.captionText.requestFocus();
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

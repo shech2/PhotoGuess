@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +28,11 @@ public class WaitingRoomFragment extends Fragment {
     View view;
     DatabaseReference roomRef;
     FirebaseDatabase database;
+    int timeLeft = 30;
+    boolean gameStarting = false;
     String roomPin;
     ValueEventListener timeLeftEventListener;
+    ValueEventListener gameReady;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,8 +47,18 @@ public class WaitingRoomFragment extends Fragment {
         timeLeftEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int timeLeft = snapshot.getValue(Integer.class);
+                timeLeft = snapshot.getValue(Integer.class);
+                if (timeLeft <= 3 && gameStarting) {
+                    binding.Timer.setText("Game will start in: ");
+                }
                 binding.TimerTV.setText(String.valueOf(timeLeft));
+                if (timeLeft == 0 && gameStarting) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("roomPin", roomPin);
+                    ActivePlayersFragment activePlayersFragment = new ActivePlayersFragment();
+                    activePlayersFragment.setArguments(bundle);
+                    replaceFragment(activePlayersFragment);
+                }
             }
 
             @Override
@@ -51,8 +66,34 @@ public class WaitingRoomFragment extends Fragment {
 
             }
         };
+        gameReady = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    gameStarting = true;
+                }
+            }
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
         // The event listener is ON THE CHILD!!!!
         roomRef.child("Time Left").addValueEventListener(timeLeftEventListener);
+        roomRef.child("Photo Uploaded").addValueEventListener(gameReady);
         return view;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = WaitingRoomFragment.this.requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+        roomRef.child("Time Left").removeEventListener(timeLeftEventListener);
+        roomRef.child("Photo Uploaded").removeEventListener(gameReady);
     }
 }
