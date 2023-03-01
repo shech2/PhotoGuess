@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -76,7 +77,11 @@ public class ActivePlayersFragment extends Fragment {
             SystemClock.sleep(1000);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             binding.displayedImage.setImageBitmap(bitmap);
-            binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(100, 100, Shader.TileMode.MIRROR));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(100, 100, Shader.TileMode.MIRROR));
+            } else {
+                binding.displayedImage.setAlpha(0.1f);
+            }
         }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download test", Toast.LENGTH_SHORT).show());
         binding.letterGuessButton.setOnClickListener(v -> {
             String letter = binding.guessText.getText().toString();
