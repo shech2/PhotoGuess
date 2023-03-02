@@ -31,6 +31,7 @@ public class WaitingRoomFragment extends Fragment {
     int timeLeft = 30;
     boolean gameStarting = false;
     String roomPin;
+    String name;
     ValueEventListener timeLeftEventListener;
     ValueEventListener gameReady;
 
@@ -40,6 +41,7 @@ public class WaitingRoomFragment extends Fragment {
         savedInstanceState = this.getArguments();
         assert savedInstanceState != null;
         roomPin = savedInstanceState.getString("roomPin");
+        name = savedInstanceState.getString("name");
         binding = FragmentWaitingRoomBinding.inflate(inflater, container, false);
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
@@ -55,6 +57,7 @@ public class WaitingRoomFragment extends Fragment {
                 if (timeLeft == 0 && gameStarting) {
                     Bundle bundle = new Bundle();
                     bundle.putString("roomPin", roomPin);
+                    bundle.putString("name", name);
                     ActivePlayersFragment activePlayersFragment = new ActivePlayersFragment();
                     activePlayersFragment.setArguments(bundle);
                     replaceFragment(activePlayersFragment);

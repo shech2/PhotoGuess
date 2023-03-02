@@ -113,6 +113,7 @@ public class gameLobbyFragment extends Fragment {
                     gameStarted = true;
                     roomRef.child("GameStarted").removeValue();
                     Bundle bundle = new Bundle();
+                    bundle.putString("name", name);
                     bundle.putString("roomPin", roomPin);
                     bundle.putInt("playerPosition", playerPosition);
                     rouletteFragment rouletteFrag = new rouletteFragment();
