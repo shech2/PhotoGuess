@@ -17,8 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.photoguess.databinding.FragmentActivePlayersBinding;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,21 +25,30 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class ActivePlayersFragment extends Fragment {
 
     FragmentActivePlayersBinding binding;
     View view;
     String roomPin;
-
+    String name;
+    ValueEventListener gameProgressListener;
     String photoCaptionText;
     char[] photoCaptionArray;
     char[] guessingArray;
-    char[] usedLetters;
+    // List of char
+    List<String> usedLetters = new ArrayList<>();
     String guessingArrayString;
     DatabaseReference roomRef;
+    DatabaseReference gameProgressRef;
     FirebaseDatabase database;
     FirebaseStorage storage;
     StorageReference storageRef;
+
+    int blurLevel = 100;
 
 
     @Override
@@ -50,11 +57,13 @@ public class ActivePlayersFragment extends Fragment {
         savedInstanceState = this.getArguments();
         assert savedInstanceState != null;
         roomPin = savedInstanceState.getString("roomPin");
+        name = savedInstanceState.getString("name");
         binding = FragmentActivePlayersBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.displayedImage.setImageResource(R.drawable.questionmark);
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        gameProgressRef = roomRef.child("GameProgress");
         roomRef.child("Caption").addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -96,7 +105,44 @@ public class ActivePlayersFragment extends Fragment {
             fullGuessChecker(guess);
         });
 
+        gameProgressListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String message = snapshot.child("MessageBoard").getValue(String.class);
+                assert message != null;
+                binding.MessageBoard.setText(message);
+                if (Objects.equals(name, snapshot.child("CurrentPlayerTurn").getValue(String.class))){
+                    binding.guessText.setEnabled(true);
+                    binding.letterGuessButton.setEnabled(true);
+                    binding.fullGuessButton.setEnabled(true);
+                } else {
+                    binding.guessText.setEnabled(false);
+                    binding.letterGuessButton.setEnabled(false);
+                    binding.fullGuessButton.setEnabled(false);
+                }
+                if (blurLevel != snapshot.child("BlurLevel").getValue(Integer.class)) {
+                    blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        if (blurLevel == 0) {
+                            binding.displayedImage.setRenderEffect(null);
+                        } else {
+                            binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                        }
+                    } else {
+                        binding.displayedImage.setAlpha(0.1f);
+                    }
+                }
 
+                if (snapshot.child("UsedLetters").getValue() != null) {
+                    usedLetters = (List<String>) snapshot.child("UsedLetters").getValue();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        };
+
+        gameProgressRef.addValueEventListener(gameProgressListener);
         return view;
     }
 
@@ -117,8 +163,8 @@ public class ActivePlayersFragment extends Fragment {
         }
         letter = Character.toUpperCase(letter);
         if (usedLetters != null) {
-            for (char usedLetter : usedLetters) {
-                if (usedLetter == letter) {
+            for (String usedLetter : usedLetters) {
+                if (usedLetter.charAt(0) == letter) {
                     Toast.makeText(getContext(), "You have already used this letter", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -132,15 +178,13 @@ public class ActivePlayersFragment extends Fragment {
             }
         }
         if (letterFound) {
-            if (usedLetters == null)
-                usedLetters = new char[1];
-            else
-                usedLetters = new char[usedLetters.length + 1]; // Test this line
-            usedLetters[usedLetters.length - 1] = letter;
+            assert usedLetters != null;
+            usedLetters.add(String.valueOf(letter));
+            gameProgressRef.child("UsedLetters").setValue(usedLetters);
             guessingArrayString = new String(guessingArray);
             binding.hangmanText.setText(guessingArrayString);
         } else {
-            // TODO: Next player turn, weaken blur
+            gameProgressRef.child("EndTurn").setValue(true);
         }
     }
 

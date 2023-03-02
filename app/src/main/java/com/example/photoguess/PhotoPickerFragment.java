@@ -100,6 +100,8 @@ public class PhotoPickerFragment extends Fragment {
                             Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
                             roomRef.child("Photo Uploaded").setValue(true);
                             roomRef.child("Caption").setValue(captionText.toUpperCase());
+                            roomRef.child("GameProgress").child("MessageBoard").setValue("Loading");
+                            roomRef.child("BlurLevel").setValue(100);
                             gameStarting = true;
                             binding.Timer.setText("Game will start in: ");
                             binding.TimerTV.setText("4");

@@ -25,6 +25,7 @@ import java.util.Objects;
 public class rouletteFragment extends Fragment {
 
     String roomPin;
+    String name;
     View view;
     FragmentRouletteBinding binding;
 
@@ -48,6 +49,7 @@ public class rouletteFragment extends Fragment {
         savedInstanceState = this.getArguments();
         assert savedInstanceState != null;
         roomPin = savedInstanceState.getString("roomPin");
+        name = savedInstanceState.getString("name");
         playerPosition = savedInstanceState.getInt("playerPosition");
         binding = FragmentRouletteBinding.inflate(inflater, container, false);
 
@@ -196,6 +198,7 @@ public class rouletteFragment extends Fragment {
     private void nextFragment() {
         Bundle bundle = new Bundle();
         bundle.putString("roomPin", roomPin);
+        bundle.putString("name", name);
         if (playerPosition == photoUploaderInt) {
             PhotoPickerFragment photoPickerFragment = new PhotoPickerFragment();
             photoPickerFragment.setArguments(bundle);
