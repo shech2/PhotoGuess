@@ -54,6 +54,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
         view = binding.getRoot();
         binding.displayedImage.setImageResource(R.drawable.questionmark);
         roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
                 int j = 0;
@@ -74,6 +75,8 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                         j++;
                     }
                 }
+                progressRef.child("CurrentPlayerTurn").setValue(playersArray[1][0]);
+                progressRef.child("BlurLevel").setValue(10);
                 System.out.println("Players Array: " + Arrays.deepToString(playersArray));
 
             }
@@ -83,9 +86,19 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             }
         });
 
+        gameProgressListener = new ValueEventListener() {
 
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            }
 
-//        progressRef.addValueEventListener(gameProgressListener);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }
+
+        progressRef.addValueEventListener(gameProgressListener);
         return view;
     }
 }
