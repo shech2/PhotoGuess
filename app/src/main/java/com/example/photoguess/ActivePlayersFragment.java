@@ -185,6 +185,7 @@ public class ActivePlayersFragment extends Fragment {
             binding.hangmanText.setText(guessingArrayString);
         } else {
             gameProgressRef.child("EndTurn").setValue(true);
+            SystemClock.sleep(1000);
         }
     }
 

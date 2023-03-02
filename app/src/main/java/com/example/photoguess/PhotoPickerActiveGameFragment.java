@@ -147,13 +147,12 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     }
 
     public void nextPlayerTurn(){
-        currentPlayerTurn = "Nimi";
-//        if (playersArrayIterator == playerCount - 1){
-//            playersArrayIterator = 0;
-//        } else {
-//            playersArrayIterator++;
-//        }
-//        currentPlayerTurn = playersArray[1][playersArrayIterator];
+        if (playersArrayIterator == playerCount - 1){
+            playersArrayIterator = 0;
+        } else {
+            playersArrayIterator++;
+        }
+        currentPlayerTurn = playersArray[1][playersArrayIterator];
         progressRef.child("CurrentPlayerTurn").setValue(currentPlayerTurn);
         if (blurLevel > 0)
             blurLevel -= 10;
