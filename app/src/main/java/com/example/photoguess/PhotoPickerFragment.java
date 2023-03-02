@@ -1,5 +1,7 @@
 package com.example.photoguess;
 
+import static java.lang.Thread.currentThread;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RenderEffect;
@@ -14,7 +16,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -34,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PhotoPickerFragment extends Fragment {
 
@@ -48,6 +54,9 @@ public class PhotoPickerFragment extends Fragment {
     ValueEventListener timeLeftEventListener;
     boolean photoChanged = false;
     boolean gameStarting = false;
+    int counter = 30;
+
+    Thread firstCounterThread;
 
 
     @Override
@@ -93,6 +102,8 @@ public class PhotoPickerFragment extends Fragment {
                             roomRef.child("Caption").setValue(captionText.toUpperCase());
                             gameStarting = true;
                             binding.Timer.setText("Game will start in: ");
+                            binding.TimerTV.setText("4");
+                            runGameStartThread();
                         });
                     }
                     else {
@@ -106,6 +117,17 @@ public class PhotoPickerFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int timeLeft = snapshot.getValue(Integer.class);
                 binding.TimerTV.setText(String.valueOf(timeLeft));
+                if (timeLeft == 0 && !gameStarting){
+                    binding.Timer.setText("Jesus Christ man, hurry up!");
+                    binding.TimerTV.setText("");
+                }
+                if (timeLeft == 0 && gameStarting){
+                    Bundle bundle = new Bundle();
+                    bundle.putString("roomPin", roomPin);
+                    PhotoPickerActiveGameFragment photoPickerActiveGameFragment = new PhotoPickerActiveGameFragment();
+                    photoPickerActiveGameFragment.setArguments(bundle);
+                    replaceFragment(photoPickerActiveGameFragment);
+                }
             }
 
             @Override
@@ -113,21 +135,35 @@ public class PhotoPickerFragment extends Fragment {
 
             }
         };
-        // The event listener is ON THE CHILD!!!!
         roomRef.child("Time Left").addValueEventListener(timeLeftEventListener);
 
         return view;
     }
 
+    // Runs a 30 second timer
     public void runThread() {
-        new Thread(() -> {
-            int counter = 30;
+        firstCounterThread = new Thread(() -> {
+            counter = 2;
             while (counter > 0) {
                 try {
-                    if (gameStarting){
-                        counter = 3;
-                        gameStarting = false;
-                    }
+                    Thread.sleep(1000);
+                    counter--;
+                    roomRef.child("Time Left").setValue(counter);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        });
+        firstCounterThread.start();
+    }
+
+    // Runs a 4 second timer
+    public void runGameStartThread(){
+        firstCounterThread.interrupt();
+        new Thread(() -> {
+            counter = 4;
+            while (counter > 0) {
+                try {
                     Thread.sleep(1000);
                     counter--;
                     roomRef.child("Time Left").setValue(counter);
@@ -136,7 +172,6 @@ public class PhotoPickerFragment extends Fragment {
                 }
             }
         }).start();
-
     }
 
     public boolean isAlphabeticalEnglish(String text) {
@@ -158,6 +193,19 @@ public class PhotoPickerFragment extends Fragment {
             }
         }
         return true;
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+        roomRef.child("Time Left").removeEventListener(timeLeftEventListener);
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = PhotoPickerFragment.this.requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
+        fragmentTransaction.commit();
     }
 
 }

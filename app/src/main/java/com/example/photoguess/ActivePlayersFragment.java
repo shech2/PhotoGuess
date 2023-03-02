@@ -82,7 +82,7 @@ public class ActivePlayersFragment extends Fragment {
             } else {
                 binding.displayedImage.setAlpha(0.1f);
             }
-        }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download test", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download failed", Toast.LENGTH_SHORT).show());
         binding.letterGuessButton.setOnClickListener(v -> {
             String letter = binding.guessText.getText().toString();
             if (letter.length() == 1) {
@@ -135,7 +135,7 @@ public class ActivePlayersFragment extends Fragment {
             if (usedLetters == null)
                 usedLetters = new char[1];
             else
-                usedLetters = new char[usedLetters.length + 1];
+                usedLetters = new char[usedLetters.length + 1]; // Test this line
             usedLetters[usedLetters.length - 1] = letter;
             guessingArrayString = new String(guessingArray);
             binding.hangmanText.setText(guessingArrayString);
@@ -180,4 +180,5 @@ public class ActivePlayersFragment extends Fragment {
     //TODO: Add sub-folder "progress" once a game takes place.
     // The sub-folder will hold information such as used letters, guesses,
     // board messages, player turn, turn time, etc.
+    // Add guessingArrayString event listener to update the board
 }
