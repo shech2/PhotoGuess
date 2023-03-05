@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.photoguess.databinding.FragmentPhotoPickerActiveGameBinding;
-import com.example.photoguess.databinding.FragmentPhotoPickerBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,9 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,7 +37,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     String roomPin;
     Thread gameThread;
     DatabaseReference roomRef;
-    DatabaseReference progressRef;
+    DatabaseReference gameProgressRef;
     FirebaseDatabase database;
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -71,7 +68,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
         binding = FragmentPhotoPickerActiveGameBinding.inflate(inflater, container, false);
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
-        progressRef = roomRef.child("GameProgress");
+        gameProgressRef = roomRef.child("GameProgress");
         view = binding.getRoot();
         storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
         storageRef = storage.getReference().child("Room_" + roomPin);
@@ -80,13 +77,39 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             binding.displayedImage.setImageBitmap(bitmap);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(100, 100, Shader.TileMode.MIRROR));
+                if (blurLevel <= 0) {
+                    binding.displayedImage.setRenderEffect(null);
+                } else {
+                    binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                }
             } else {
                 binding.displayedImage.setAlpha(0.1f);
             }
         }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download failed", Toast.LENGTH_SHORT).show());
 
         binding.displayedImage.setImageResource(R.drawable.questionmark);
+        binding.deblurButton.setOnClickListener(v -> {
+            if (blurLevel > 0){
+                blurLevel -= 5;
+            }
+            gameProgressRef.child("BlurLevel").setValue(blurLevel);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+            } else {
+                binding.displayedImage.setAlpha(0.1f);
+            }
+        });
+        binding.giveHintButton.setOnClickListener(v -> {
+            String letter = binding.enterHintText.getText().toString();
+            if (letter.length() == 1) {
+                letterChecker(letter.charAt(0));
+            } else {
+                Toast.makeText(getContext(), "Please enter a single letter", Toast.LENGTH_SHORT).show();
+            }
+        });
+        binding.skipTurnButton.setOnClickListener(v -> {
+            gameProgressRef.child("SkipTurn").setValue(true);
+        });
         roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @SuppressLint("SetTextI18n")
@@ -113,11 +136,11 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                 playerCount--;
                 messageBoardText = "Game Started";
                 binding.MessageBoard.setText(messageBoardText);
-                progressRef.child("MessageBoard").setValue(messageBoardText);
+                gameProgressRef.child("MessageBoard").setValue(messageBoardText);
                 currentPlayerTurn = playersArray[1][0];
-                progressRef.child("CurrentPlayerTurn").setValue(currentPlayerTurn);
-                progressRef.child("BlurLevel").setValue(100);
-                progressRef.child("Timer").setValue(30);
+                gameProgressRef.child("CurrentPlayerTurn").setValue(currentPlayerTurn);
+                gameProgressRef.child("BlurLevel").setValue(100);
+                gameProgressRef.child("Timer").setValue(30);
                 photoCaptionText = snapshot.child("Caption").getValue(String.class);
                 assert photoCaptionText != null;
                 photoCaptionArray = photoCaptionText.toCharArray();
@@ -145,7 +168,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                 if (blurLevel != snapshot.child("BlurLevel").getValue(Integer.class)) {
                     blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (blurLevel == 0) {
+                        if (blurLevel <= 0) {
                             binding.displayedImage.setRenderEffect(null);
                         } else {
                             binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
@@ -170,9 +193,9 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                 if (snapshot.child("Winner").getValue() != null){
                     gameThread.interrupt();
                     String winner = Objects.requireNonNull(snapshot.child("Winner").getValue()).toString();
-                    progressRef.child("BlurLevel").setValue(0);
-                    progressRef.child("CurrentGuess").setValue(photoCaptionText);
-                    progressRef.child("MessageBoard")
+                    gameProgressRef.child("BlurLevel").setValue(0);
+                    gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
+                    gameProgressRef.child("MessageBoard")
                             .setValue(winner + " has won the round!");
                 }
             }
@@ -183,7 +206,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             }
         };
 
-        progressRef.addValueEventListener(gameProgressListener);
+        gameProgressRef.addValueEventListener(gameProgressListener);
         gameStart();
         return view;
     }
@@ -200,7 +223,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                         if (snapshot.child("SkipTurn").getValue() != null){
                             if (snapshot.child("SkipTurn").getValue().toString().equals("true") && counter > 1){
                                 counter = 1;
-                                progressRef.child("SkipTurn").setValue(false);
+                                gameProgressRef.child("SkipTurn").setValue(false);
                             }
                         }
                     }
@@ -210,14 +233,14 @@ public class PhotoPickerActiveGameFragment extends Fragment {
 
                     }
                 };
-                progressRef.addValueEventListener(skipTurnListener);
+                gameProgressRef.addValueEventListener(skipTurnListener);
                 while (true){
                     counter = 10;
                     while (counter > 0) {
                         try {
                             Thread.sleep(1000);
                             counter--;
-                            progressRef.child("Timer").setValue(counter);
+                            gameProgressRef.child("Timer").setValue(counter);
                             updateMessageBoard(counter);
 
                         } catch (InterruptedException e) {
@@ -238,16 +261,16 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             playersArrayIterator++;
         }
         currentPlayerTurn = playersArray[1][playersArrayIterator];
-        progressRef.child("CurrentPlayerTurn").setValue(currentPlayerTurn);
+        gameProgressRef.child("CurrentPlayerTurn").setValue(currentPlayerTurn);
         if (blurLevel > 0)
             blurLevel -= 10;
-        progressRef.child("BlurLevel").setValue(blurLevel);
+        gameProgressRef.child("BlurLevel").setValue(blurLevel);
 
 
     }
 
     public void updateMessageBoard(int counter){
-            progressRef.child("MessageBoard")
+            gameProgressRef.child("MessageBoard")
                 .setValue("It is now " + currentPlayerTurn + "'s turn " + counter);
     }
 
@@ -258,6 +281,36 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             } else {
                 guessingArray[i] = ' ';
             }
+        }
+    }
+
+    public void letterChecker(char letter){
+        if (!Character.isLetter(letter)) {
+            Toast.makeText(getContext(), "Please enter a letter", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        letter = Character.toUpperCase(letter);
+        if (usedLetters != null) {
+            for (String usedLetter : usedLetters) {
+                if (usedLetter.charAt(0) == letter) {
+                    Toast.makeText(getContext(), "Letter already used", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        }
+        boolean letterFound = false;
+        for (int i = 0; i < photoCaptionArray.length; i++) {
+            if (photoCaptionArray[i] == letter) {
+                letterFound = true;
+                guessingArray[i] = letter;
+            }
+        }
+        usedLetters.add(String.valueOf(letter));
+        gameProgressRef.child("UsedLetters").setValue(usedLetters);
+        if (letterFound) {
+            guessingArrayString = new String(guessingArray);
+            binding.hangmanText.setText(guessingArrayString);
+            gameProgressRef.child("CurrentGuess").setValue(guessingArrayString);
         }
     }
 }

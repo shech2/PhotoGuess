@@ -128,7 +128,7 @@ public class ActivePlayersFragment extends Fragment {
                 if (blurLevel != snapshot.child("BlurLevel").getValue(Integer.class)) {
                     blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (blurLevel == 0) {
+                        if (blurLevel <= 0) {
                             binding.displayedImage.setRenderEffect(null);
                         } else {
                             binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
@@ -178,7 +178,7 @@ public class ActivePlayersFragment extends Fragment {
         if (usedLetters != null) {
             for (String usedLetter : usedLetters) {
                 if (usedLetter.charAt(0) == letter) {
-                    Toast.makeText(getContext(), "You have already used this letter", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Letter already used", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
