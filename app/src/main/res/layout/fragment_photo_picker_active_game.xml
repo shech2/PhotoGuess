@@ -41,34 +41,34 @@
         android:text="___ __ ______ __ _____"
         android:textAlignment="center"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/guessText"
+        app:layout_constraintBottom_toTopOf="@+id/enterHintText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/displayedImage" />
 
     <ImageView
-        android:id="@+id/fullGuessButton"
+        android:id="@+id/deblurButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/fullword"
-        app:layout_constraintBottom_toTopOf="@+id/fullGuessText"
-        app:layout_constraintEnd_toStartOf="@+id/letterGuessButton"
+        android:src="@drawable/blur"
+        app:layout_constraintBottom_toTopOf="@+id/deblurText"
+        app:layout_constraintEnd_toStartOf="@+id/giveHintButton"
         app:layout_constraintStart_toEndOf="@+id/skipTurnButton"
-        app:layout_constraintTop_toBottomOf="@+id/guessText" />
+        app:layout_constraintTop_toBottomOf="@+id/enterHintText" />
 
     <ImageView
-        android:id="@+id/letterGuessButton"
+        android:id="@+id/giveHintButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/word"
-        app:layout_constraintBottom_toBottomOf="@+id/fullGuessButton"
+        android:src="@drawable/hint"
+        app:layout_constraintBottom_toBottomOf="@+id/deblurButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fullGuessButton"
-        app:layout_constraintTop_toTopOf="@+id/fullGuessButton" />
+        app:layout_constraintStart_toEndOf="@+id/deblurButton"
+        app:layout_constraintTop_toTopOf="@+id/deblurButton" />
 
     <ImageView
         android:id="@+id/skipTurnButton"
@@ -77,20 +77,20 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="39dp"
         android:src="@drawable/skippingrope"
-        app:layout_constraintBottom_toBottomOf="@+id/fullGuessButton"
-        app:layout_constraintEnd_toStartOf="@+id/fullGuessButton"
+        app:layout_constraintBottom_toBottomOf="@+id/deblurButton"
+        app:layout_constraintEnd_toStartOf="@+id/deblurButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fullGuessButton" />
+        app:layout_constraintTop_toTopOf="@+id/deblurButton" />
 
     <TextView
-        android:id="@+id/fullGuessText"
+        android:id="@+id/deblurText"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
-        android:text="FULL GUESS"
+        android:text="REDUCE BLUR"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/fullGuessButton"
-        app:layout_constraintStart_toStartOf="@+id/fullGuessButton"
-        app:layout_constraintTop_toBottomOf="@+id/fullGuessButton" />
+        app:layout_constraintEnd_toEndOf="@+id/deblurButton"
+        app:layout_constraintStart_toStartOf="@+id/deblurButton"
+        app:layout_constraintTop_toBottomOf="@+id/deblurButton" />
 
     <TextView
         android:id="@+id/skipTurnText"
@@ -103,25 +103,25 @@
         app:layout_constraintTop_toBottomOf="@+id/skipTurnButton" />
 
     <TextView
-        android:id="@+id/letterGuessText"
+        android:id="@+id/hintText"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
-        android:text="LETTER GUESS"
+        android:text="GIVE HINT"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/letterGuessButton"
-        app:layout_constraintStart_toStartOf="@+id/letterGuessButton"
-        app:layout_constraintTop_toBottomOf="@+id/letterGuessButton" />
+        app:layout_constraintEnd_toEndOf="@+id/giveHintButton"
+        app:layout_constraintStart_toStartOf="@+id/giveHintButton"
+        app:layout_constraintTop_toBottomOf="@+id/giveHintButton" />
 
     <EditText
-        android:id="@+id/guessText"
+        android:id="@+id/enterHintText"
         android:layout_width="210dp"
         android:layout_height="48dp"
         android:layout_marginBottom="5dp"
         android:ems="10"
-        android:hint="Enter your guess"
+        android:hint="Enter a letter hint"
         android:inputType="textPersonName"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/fullGuessButton"
+        app:layout_constraintBottom_toTopOf="@+id/deblurButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"

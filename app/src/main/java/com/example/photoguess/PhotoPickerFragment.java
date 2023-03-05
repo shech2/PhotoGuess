@@ -101,7 +101,7 @@ public class PhotoPickerFragment extends Fragment {
                             roomRef.child("Photo Uploaded").setValue(true);
                             roomRef.child("Caption").setValue(captionText.toUpperCase());
                             roomRef.child("GameProgress").child("MessageBoard").setValue("Loading");
-                            roomRef.child("BlurLevel").setValue(100);
+                            roomRef.child("GameProgress").child("BlurLevel").setValue(100);
                             gameStarting = true;
                             binding.Timer.setText("Game will start in: ");
                             binding.TimerTV.setText("4");

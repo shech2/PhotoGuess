@@ -104,6 +104,9 @@ public class ActivePlayersFragment extends Fragment {
             String guess = binding.guessText.getText().toString();
             fullGuessChecker(guess);
         });
+        binding.skipTurnButton.setOnClickListener(v -> {
+            skipTurn();
+        });
 
         gameProgressListener = new ValueEventListener() {
             @Override
@@ -115,15 +118,17 @@ public class ActivePlayersFragment extends Fragment {
                     binding.guessText.setEnabled(true);
                     binding.letterGuessButton.setEnabled(true);
                     binding.fullGuessButton.setEnabled(true);
+                    binding.skipTurnButton.setEnabled(true);
                 } else {
                     binding.guessText.setEnabled(false);
                     binding.letterGuessButton.setEnabled(false);
                     binding.fullGuessButton.setEnabled(false);
+                    binding.skipTurnButton.setEnabled(false);
                 }
                 if (blurLevel != snapshot.child("BlurLevel").getValue(Integer.class)) {
                     blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (blurLevel == 0) {
+                        if (blurLevel <= 0) {
                             binding.displayedImage.setRenderEffect(null);
                         } else {
                             binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
@@ -135,6 +140,14 @@ public class ActivePlayersFragment extends Fragment {
 
                 if (snapshot.child("UsedLetters").getValue() != null) {
                     usedLetters = (List<String>) snapshot.child("UsedLetters").getValue();
+                }
+                if (snapshot.child("CurrentGuess").getValue() != null){
+                    String cg = snapshot.child("CurrentGuess").getValue(String.class);
+                    if (!Objects.equals(cg, guessingArrayString)){
+                        guessingArrayString = snapshot.child("CurrentGuess").getValue(String.class);
+                        guessingArray = guessingArrayString.toCharArray();
+                        binding.hangmanText.setText(guessingArrayString);
+                    }
                 }
             }
             @Override
@@ -165,7 +178,7 @@ public class ActivePlayersFragment extends Fragment {
         if (usedLetters != null) {
             for (String usedLetter : usedLetters) {
                 if (usedLetter.charAt(0) == letter) {
-                    Toast.makeText(getContext(), "You have already used this letter", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Letter already used", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -177,15 +190,14 @@ public class ActivePlayersFragment extends Fragment {
                 guessingArray[i] = letter;
             }
         }
+        usedLetters.add(String.valueOf(letter));
+        gameProgressRef.child("UsedLetters").setValue(usedLetters);
         if (letterFound) {
-            assert usedLetters != null;
-            usedLetters.add(String.valueOf(letter));
-            gameProgressRef.child("UsedLetters").setValue(usedLetters);
             guessingArrayString = new String(guessingArray);
             binding.hangmanText.setText(guessingArrayString);
+            gameProgressRef.child("CurrentGuess").setValue(guessingArrayString);
         } else {
-            gameProgressRef.child("EndTurn").setValue(true);
-            SystemClock.sleep(1000);
+            skipTurn();
         }
     }
 
@@ -196,6 +208,10 @@ public class ActivePlayersFragment extends Fragment {
                 guessingArray = photoCaptionArray;
                 guessingArrayString = new String(guessingArray);
                 binding.hangmanText.setText(guessingArrayString);
+                gameProgressRef.child("Winner").setValue(name);
+            }
+            else {
+                skipTurn();
             }
         }
     }
@@ -222,8 +238,11 @@ public class ActivePlayersFragment extends Fragment {
         return true;
     }
 
-    //TODO: Add sub-folder "progress" once a game takes place.
-    // The sub-folder will hold information such as used letters, guesses,
-    // board messages, player turn, turn time, etc.
-    // Add guessingArrayString event listener to update the board
+    public void skipTurn(){
+        gameProgressRef.child("SkipTurn").setValue(true);
+        binding.guessText.setEnabled(false);
+        binding.letterGuessButton.setEnabled(false);
+        binding.fullGuessButton.setEnabled(false);
+        binding.skipTurnButton.setEnabled(false);
+    }
 }
