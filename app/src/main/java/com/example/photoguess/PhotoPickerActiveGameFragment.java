@@ -37,6 +37,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     StorageReference storageRef;
     String messageBoardText;
     ValueEventListener gameProgressListener;
+    ValueEventListener skipTurnListener;
 
     String currentPlayerTurn;
 
@@ -108,6 +109,14 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                     messageBoardText = snapshot.child("MessageBoard").getValue().toString();
                     binding.MessageBoard.setText(messageBoardText);
                 }
+
+                if (snapshot.child("Winner").getValue() != null){
+                    gameThread.interrupt();
+                    String winner = Objects.requireNonNull(snapshot.child("Winner").getValue()).toString();
+                    progressRef.child("BlurLevel").setValue(0);
+                    progressRef.child("MessageBoard")
+                            .setValue(winner + " has won the round!");
+                }
             }
 
             @Override
@@ -123,9 +132,27 @@ public class PhotoPickerActiveGameFragment extends Fragment {
 
     public void gameStart(){
         gameThread = new Thread(new Runnable() {
-            int counter = 5;
+
+            int counter = 10;
             @Override
             public void run() {
+                skipTurnListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.child("SkipTurn").getValue() != null){
+                            if (snapshot.child("SkipTurn").getValue().toString().equals("true") && counter > 1){
+                                counter = 1;
+                                progressRef.child("SkipTurn").setValue(false);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };
+                progressRef.addValueEventListener(skipTurnListener);
                 while (true){
                     counter = 10;
                     while (counter > 0) {
@@ -162,7 +189,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     }
 
     public void updateMessageBoard(int counter){
-        progressRef.child("MessageBoard")
+            progressRef.child("MessageBoard")
                 .setValue("It is now " + currentPlayerTurn + "'s turn " + counter);
     }
 }
