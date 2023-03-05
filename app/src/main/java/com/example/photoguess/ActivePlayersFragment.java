@@ -141,6 +141,14 @@ public class ActivePlayersFragment extends Fragment {
                 if (snapshot.child("UsedLetters").getValue() != null) {
                     usedLetters = (List<String>) snapshot.child("UsedLetters").getValue();
                 }
+                if (snapshot.child("CurrentGuess").getValue() != null){
+                    String cg = snapshot.child("CurrentGuess").getValue(String.class);
+                    if (!Objects.equals(cg, guessingArrayString)){
+                        guessingArrayString = snapshot.child("CurrentGuess").getValue(String.class);
+                        guessingArray = guessingArrayString.toCharArray();
+                        binding.hangmanText.setText(guessingArrayString);
+                    }
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -182,12 +190,12 @@ public class ActivePlayersFragment extends Fragment {
                 guessingArray[i] = letter;
             }
         }
+        usedLetters.add(String.valueOf(letter));
+        gameProgressRef.child("UsedLetters").setValue(usedLetters);
         if (letterFound) {
-            assert usedLetters != null;
-            usedLetters.add(String.valueOf(letter));
-            gameProgressRef.child("UsedLetters").setValue(usedLetters);
             guessingArrayString = new String(guessingArray);
             binding.hangmanText.setText(guessingArrayString);
+            gameProgressRef.child("CurrentGuess").setValue(guessingArrayString);
         } else {
             skipTurn();
         }
