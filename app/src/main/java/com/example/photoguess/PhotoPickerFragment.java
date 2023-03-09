@@ -98,7 +98,7 @@ public class PhotoPickerFragment extends Fragment {
                         UploadTask uploadTask = storageRef.putBytes(data);
                         uploadTask.addOnFailureListener(exception -> Toast.makeText(getContext(), "Upload unsuccessful", Toast.LENGTH_SHORT).show()).addOnSuccessListener(taskSnapshot -> {
                             Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_SHORT).show();
-                            roomRef.child("Photo Uploaded").setValue(true);
+                            roomRef.child("PhotoUploaded").setValue(true);
                             roomRef.child("Caption").setValue(captionText.toUpperCase());
                             roomRef.child("GameProgress").child("MessageBoard").setValue("Loading");
                             roomRef.child("GameProgress").child("BlurLevel").setValue(100);
@@ -145,7 +145,7 @@ public class PhotoPickerFragment extends Fragment {
     // Runs a 30 second timer
     public void runThread() {
         firstCounterThread = new Thread(() -> {
-            counter = 2;
+            counter = 30;
             while (counter > 0) {
                 try {
                     Thread.sleep(1000);
@@ -201,6 +201,8 @@ public class PhotoPickerFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         roomRef.child("Time Left").removeEventListener(timeLeftEventListener);
+        roomRef.child("Time Left").setValue(30);
+        roomRef.child("PhotoUploaded").removeValue();
     }
 
     private void replaceFragment(Fragment fragment) {
