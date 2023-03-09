@@ -82,7 +82,7 @@ public class WaitingRoomFragment extends Fragment {
         };
         // The event listener is ON THE CHILD!!!!
         roomRef.child("Time Left").addValueEventListener(timeLeftEventListener);
-        roomRef.child("Photo Uploaded").addValueEventListener(gameReady);
+        roomRef.child("PhotoUploaded").addValueEventListener(gameReady);
         return view;
     }
 
@@ -97,6 +97,6 @@ public class WaitingRoomFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         roomRef.child("Time Left").removeEventListener(timeLeftEventListener);
-        roomRef.child("Photo Uploaded").removeEventListener(gameReady);
+        roomRef.child("PhotoUploaded").removeEventListener(gameReady);
     }
 }

@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.SystemClock;
 import android.view.LayoutInflater;
@@ -49,6 +51,8 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     String guessingArrayString;
 
     String photoCaptionText;
+    String name;
+    String winner;
     char[] photoCaptionArray;
     char[] guessingArray;
     List<String> usedLetters = new ArrayList<>();
@@ -57,6 +61,8 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     int playerCount = 4;
     int playersArrayIterator = 0;
     int blurLevel = 100;
+
+    int messageStage = 0;
 
 
     @Override
@@ -94,7 +100,11 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             }
             gameProgressRef.child("BlurLevel").setValue(blurLevel);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                if (blurLevel <= 0) {
+                    binding.displayedImage.setRenderEffect(null);
+                } else {
+                    binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                }
             } else {
                 binding.displayedImage.setAlpha(0.1f);
             }
@@ -131,6 +141,14 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                             playersArray[1][j] = Objects.requireNonNull(child.getValue()).toString();
                         }
                         j++;
+                    }
+                    else{
+                        for (DataSnapshot child : snapshot.child("Players")
+                                .child("Player" + (i + 1))
+                                .getChildren())
+                        {
+                            name = Objects.requireNonNull(child.getValue()).toString();
+                        }
                     }
                 }
                 playerCount--;
@@ -191,12 +209,12 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                 }
 
                 if (snapshot.child("Winner").getValue() != null){
-                    gameThread.interrupt();
-                    String winner = Objects.requireNonNull(snapshot.child("Winner").getValue()).toString();
-                    gameProgressRef.child("BlurLevel").setValue(0);
-                    gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
-                    gameProgressRef.child("MessageBoard")
-                            .setValue(winner + " has won the round!");
+                    winner = Objects.requireNonNull(snapshot.child("Winner").getValue()).toString();
+                    endGameSequence();
+                }
+
+                if (snapshot.child("Restart").getValue() != null){
+                    nextFragment();
                 }
             }
 
@@ -211,10 +229,42 @@ public class PhotoPickerActiveGameFragment extends Fragment {
         return view;
     }
 
+    public void endGameSequence(){
+        gameThread.interrupt();
+        gameThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (messageStage == 0){
+                    gameProgressRef.child("BlurLevel").setValue(0);
+                    gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
+                    gameProgressRef.child("MessageBoard")
+                            .setValue(winner + " has won the round!");
+                    for (int i = 0; i < playerCount; i++) {
+                        if (playersArray[1][i].equals(winner)){
+                            roomRef.child("PhotoUploader").setValue(playersArray[0][i]);
+                        }
+                    }
+                    messageStage = 1;
+                }
+                else if (messageStage == 1){
+                    SystemClock.sleep(3000);
+                    gameProgressRef.child("MessageBoard")
+                            .setValue("Next round will begin momentarily");
+                    messageStage = 2;
+                }
+                else if (messageStage == 2){
+                    SystemClock.sleep(2000);
+                    gameProgressRef.child("Restart").setValue(true);
+                    gameThread.interrupt();
+                }
+            }
+        });
+        gameThread.start();
+    }
     public void gameStart(){
         gameThread = new Thread(new Runnable() {
 
-            int counter = 10;
+            int counter = 30;
             @Override
             public void run() {
                 skipTurnListener = new ValueEventListener() {
@@ -235,7 +285,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                 };
                 gameProgressRef.addValueEventListener(skipTurnListener);
                 while (true){
-                    counter = 10;
+                    counter = 30;
                     while (counter > 0) {
                         try {
                             Thread.sleep(1000);
@@ -312,5 +362,33 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             binding.hangmanText.setText(guessingArrayString);
             gameProgressRef.child("CurrentGuess").setValue(guessingArrayString);
         }
+
+
     }
+
+    private void nextFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("roomPin", roomPin);
+        bundle.putString("name", name);
+        WaitingRoomFragment waitingRoomFragment = new WaitingRoomFragment();
+        waitingRoomFragment.setArguments(bundle);
+        replaceFragment(waitingRoomFragment);
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = PhotoPickerActiveGameFragment.this.requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+        gameProgressRef.removeEventListener(gameProgressListener);
+        gameProgressRef.removeEventListener(skipTurnListener);
+        gameProgressRef.removeValue();
+
+    }
+
 }

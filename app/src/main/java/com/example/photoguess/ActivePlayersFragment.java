@@ -9,6 +9,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.SystemClock;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ public class ActivePlayersFragment extends Fragment {
     String name;
     ValueEventListener gameProgressListener;
     String photoCaptionText;
+    String winner;
     char[] photoCaptionArray;
     char[] guessingArray;
     // List of char
@@ -149,6 +152,12 @@ public class ActivePlayersFragment extends Fragment {
                         binding.hangmanText.setText(guessingArrayString);
                     }
                 }
+
+                if ((snapshot.child("Winner").getValue() != null) && (snapshot.child("Restart").getValue() != null)){
+                    winner = snapshot.child("Winner").getValue(String.class);
+                    nextFragment();
+                }
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -245,4 +254,33 @@ public class ActivePlayersFragment extends Fragment {
         binding.fullGuessButton.setEnabled(false);
         binding.skipTurnButton.setEnabled(false);
     }
+
+    private void nextFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("roomPin", roomPin);
+        bundle.putString("name", name);
+        if (Objects.equals(winner, name)) {
+            PhotoPickerFragment photoPickerFragment = new PhotoPickerFragment();
+            photoPickerFragment.setArguments(bundle);
+            replaceFragment(photoPickerFragment);
+        }else{
+            WaitingRoomFragment waitingRoomFragment = new WaitingRoomFragment();
+            waitingRoomFragment.setArguments(bundle);
+            replaceFragment(waitingRoomFragment);
+        }
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = ActivePlayersFragment.this.requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+        gameProgressRef.removeEventListener(gameProgressListener);
+    }
+
 }
