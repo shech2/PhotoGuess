@@ -173,6 +173,7 @@ public class PhotoPickerFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+            firstCounterThread.interrupt();
         }).start();
     }
 

@@ -17,6 +17,7 @@ import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.photoguess.databinding.FragmentPhotoPickerActiveGameBinding;
@@ -56,7 +57,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     char[] photoCaptionArray;
     char[] guessingArray;
     List<String> usedLetters = new ArrayList<>();
-
+    ImageView displayedImage;
     String[][] playersArray;
     int playerCount = 4;
     int playersArrayIterator = 0;
@@ -68,6 +69,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        messageStage = 0;
         savedInstanceState = this.getArguments();
         assert savedInstanceState != null;
         roomPin = savedInstanceState.getString("roomPin");
@@ -76,24 +78,25 @@ public class PhotoPickerActiveGameFragment extends Fragment {
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
         gameProgressRef = roomRef.child("GameProgress");
         view = binding.getRoot();
+        displayedImage = binding.getRoot().findViewById(R.id.displayedImage);
         storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
         storageRef = storage.getReference().child("Room_" + roomPin);
         storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
             SystemClock.sleep(1000);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            binding.displayedImage.setImageBitmap(bitmap);
+            displayedImage.setImageBitmap(bitmap);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (blurLevel <= 0) {
-                    binding.displayedImage.setRenderEffect(null);
+                    displayedImage.setRenderEffect(null);
                 } else {
-                    binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                    displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
                 }
             } else {
-                binding.displayedImage.setAlpha(0.1f);
+                displayedImage.setAlpha(0.1f);
             }
         }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download failed", Toast.LENGTH_SHORT).show());
 
-        binding.displayedImage.setImageResource(R.drawable.questionmark);
+        displayedImage.setImageResource(R.drawable.questionmark);
         binding.deblurButton.setOnClickListener(v -> {
             if (blurLevel > 0){
                 blurLevel -= 5;
@@ -101,12 +104,12 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             gameProgressRef.child("BlurLevel").setValue(blurLevel);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (blurLevel <= 0) {
-                    binding.displayedImage.setRenderEffect(null);
+                    displayedImage.setRenderEffect(null);
                 } else {
-                    binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                    displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
                 }
             } else {
-                binding.displayedImage.setAlpha(0.1f);
+                displayedImage.setAlpha(0.1f);
             }
         });
         binding.giveHintButton.setOnClickListener(v -> {
@@ -187,12 +190,12 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                     blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         if (blurLevel <= 0) {
-                            binding.displayedImage.setRenderEffect(null);
+                            displayedImage.setRenderEffect(null);
                         } else {
-                            binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                            displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
                         }
                     } else {
-                        binding.displayedImage.setAlpha(0.1f);
+                        displayedImage.setAlpha(0.1f);
                     }
                 }
 
@@ -256,6 +259,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                     SystemClock.sleep(2000);
                     gameProgressRef.child("Restart").setValue(true);
                     gameThread.interrupt();
+                    messageStage = 3;
                 }
             }
         });
