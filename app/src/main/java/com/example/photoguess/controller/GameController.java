@@ -1,7 +1,5 @@
 package com.example.photoguess.controller;
 
-import android.os.Bundle;
-
 import com.example.photoguess.model.GameModel;
 import com.example.photoguess.model.MyModelSingleton;
 
@@ -14,7 +12,7 @@ public class GameController {
     }
 
     public void startGame() {
-            gameModel.startGame();
+        gameModel.startGame();
     }
 
     public void setRoomPin(String pin){

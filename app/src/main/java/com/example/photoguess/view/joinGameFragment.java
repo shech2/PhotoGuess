@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class joinGameFragment extends Fragment {
+public class joinGameFragment extends BaseFragment {
 
     View view;
     String playerName;
@@ -77,11 +77,5 @@ public class joinGameFragment extends Fragment {
         return view;
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
-        fragmentTransaction.commit();
-    }
 
 }

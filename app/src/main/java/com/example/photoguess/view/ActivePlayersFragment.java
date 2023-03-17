@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ActivePlayersFragment extends Fragment {
+public class ActivePlayersFragment extends BaseFragment {
 
     FragmentActivePlayersBinding binding;
     View view;
@@ -270,13 +270,6 @@ public class ActivePlayersFragment extends Fragment {
             waitingRoomFragment.setArguments(bundle);
             replaceFragment(waitingRoomFragment);
         }
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = ActivePlayersFragment.this.requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
-        fragmentTransaction.commit();
     }
 
     public void onDestroyView() {
