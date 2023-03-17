@@ -115,7 +115,8 @@ public class ActivePlayersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String message = snapshot.child("MessageBoard").getValue(String.class);
-                assert message != null;
+                if (message == null)
+                    message = "Loading...";
                 binding.MessageBoard.setText(message);
                 if (Objects.equals(name, snapshot.child("CurrentPlayerTurn").getValue(String.class))){
                     binding.guessText.setEnabled(true);
