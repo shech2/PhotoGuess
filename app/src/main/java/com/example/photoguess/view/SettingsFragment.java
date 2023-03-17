@@ -1,4 +1,4 @@
-package com.example.photoguess;
+package com.example.photoguess.view;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import com.example.photoguess.R;
 import com.example.photoguess.databinding.FragmentSettingsBinding;
 
 public class SettingsFragment extends Fragment {

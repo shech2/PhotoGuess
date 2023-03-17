@@ -1,32 +1,23 @@
-package com.example.photoguess;
+package com.example.photoguess.view;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import com.example.photoguess.databinding.FragmentMenuBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 import java.util.Random;
 
-public class MenuFragment extends Fragment {
+public class MenuFragment extends BaseFragment {
 
-    View view;
     FragmentMenuBinding binding;
 
     @Override
@@ -34,20 +25,10 @@ public class MenuFragment extends Fragment {
         binding = FragmentMenuBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.SettingsBTN.setOnClickListener(view -> replaceFragment(new SettingsFragment()));
-
         binding.createGameButton.setOnClickListener(view -> createRoom());
-
         binding.joinGameButton.setOnClickListener(view -> joinRoom());
         binding.test.setOnClickListener(view -> replaceFragment(new GameFragment()));
-
         return view;
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
-        fragmentTransaction.commit();
     }
 
     private void joinRoom(){
@@ -65,9 +46,10 @@ public class MenuFragment extends Fragment {
     }
 
     private void createRoom(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
+        FirebaseDatabase database = gameModel.getDatabase();
         DatabaseReference myRef = database.getReference("Rooms");
         final String[] roomPin = {pinGenerator()};
+        gameController.setRoomPin(roomPin[0]);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
