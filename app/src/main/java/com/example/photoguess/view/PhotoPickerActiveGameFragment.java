@@ -1,4 +1,4 @@
-package com.example.photoguess;
+package com.example.photoguess.view;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.photoguess.R;
 import com.example.photoguess.databinding.FragmentPhotoPickerActiveGameBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

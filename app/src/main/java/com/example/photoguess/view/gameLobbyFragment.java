@@ -1,7 +1,5 @@
-package com.example.photoguess;
+package com.example.photoguess.view;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -18,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.photoguess.R;
 import com.example.photoguess.databinding.FragmentGameLobbyBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,16 +27,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class gameLobbyFragment extends Fragment {
-
-    View view;
+public class gameLobbyFragment extends BaseFragment {
 
     boolean gameStarted = false;
     FragmentGameLobbyBinding binding;
     ListView listView;
     TextView roomPinDisplay;
     ArrayList<String> players = new ArrayList<>();
-    String name;
 
     int playerPosition;
     String roomPin;
@@ -62,7 +58,7 @@ public class gameLobbyFragment extends Fragment {
         binding = FragmentGameLobbyBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.backButton2.setOnClickListener(view -> replaceFragment(new MenuFragment()));
-        binding.startGameButton.setOnClickListener(view -> startGame());
+        binding.startGameButton.setOnClickListener(view -> gameController.startGame());
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -135,13 +131,6 @@ public class gameLobbyFragment extends Fragment {
         return view;
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = gameLobbyFragment.this.requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
-        fragmentTransaction.commit();
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -159,15 +148,15 @@ public class gameLobbyFragment extends Fragment {
         countRef.removeEventListener(roomEventListener);
     }
 
-    public void startGame(){
-        setRandomUploader();
-        roomRef.child("Time Left").setValue(30);
-        roomRef.child("GameStarted").setValue(true);
-    }
-
-    public void setRandomUploader(){
-        roomRef.child("PhotoUploader").setValue("Player1");
-//        int random = (int) (Math.random() * playersCount + 1);
-//        roomRef.child("PhotoUploader").setValue("Player"+random);
-    }
+//    public void startGame(){
+//        setRandomUploader();
+//        roomRef.child("Time Left").setValue(30);
+//        roomRef.child("GameStarted").setValue(true);
+//    }
+//
+//    public void setRandomUploader(){
+//        roomRef.child("PhotoUploader").setValue("Player1");
+////        int random = (int) (Math.random() * playersCount + 1);
+////        roomRef.child("PhotoUploader").setValue("Player"+random);
+//    }
 }

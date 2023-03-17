@@ -1,4 +1,4 @@
-package com.example.photoguess;
+package com.example.photoguess.view;
 
 public class User {
     private final String name;

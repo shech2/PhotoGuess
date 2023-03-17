@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".view.MainActivity">
 
     <RelativeLayout
         android:id="@+id/RelativeLayout"
@@ -18,7 +18,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mainFragmentContainerView"
-            android:name="com.example.photoguess.MenuFragment"
+            android:name="com.example.photoguess.view.MenuFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout="@layout/fragment_menu" />
