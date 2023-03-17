@@ -235,33 +235,30 @@ public class PhotoPickerActiveGameFragment extends Fragment {
 
     public void endGameSequence(){
         gameThread.interrupt();
-        gameThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (messageStage == 0){
-                    gameProgressRef.child("BlurLevel").setValue(0);
-                    gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
-                    gameProgressRef.child("MessageBoard")
-                            .setValue(winner + " has won the round!");
-                    for (int i = 0; i < playerCount; i++) {
-                        if (playersArray[1][i].equals(winner)){
-                            roomRef.child("PhotoUploader").setValue(playersArray[0][i]);
-                        }
+        gameThread = new Thread(() -> {
+            if (messageStage == 0){
+                gameProgressRef.child("BlurLevel").setValue(0);
+                gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
+                gameProgressRef.child("MessageBoard")
+                        .setValue(winner + " has won the round!");
+                for (int i = 0; i < playerCount; i++) {
+                    if (playersArray[1][i].equals(winner)){
+                        roomRef.child("PhotoUploader").setValue(playersArray[0][i]);
                     }
-                    messageStage = 1;
                 }
-                else if (messageStage == 1){
-                    SystemClock.sleep(3000);
-                    gameProgressRef.child("MessageBoard")
-                            .setValue("Next round will begin momentarily");
-                    messageStage = 2;
-                }
-                else if (messageStage == 2){
-                    SystemClock.sleep(2000);
-                    gameProgressRef.child("Restart").setValue(true);
-                    gameThread.interrupt();
-                    messageStage = 3;
-                }
+                messageStage = 1;
+            }
+            else if (messageStage == 1){
+                SystemClock.sleep(3000);
+                gameProgressRef.child("MessageBoard")
+                        .setValue("Next round will begin momentarily");
+                messageStage = 2;
+            }
+            else if (messageStage == 2){
+                SystemClock.sleep(2000);
+                gameProgressRef.child("Restart").setValue(true);
+                gameThread.interrupt();
+                messageStage = 3;
             }
         });
         gameThread.start();
