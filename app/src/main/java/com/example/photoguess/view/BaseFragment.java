@@ -15,6 +15,7 @@ import com.example.photoguess.model.GameModel;
 import com.example.photoguess.model.MyModelSingleton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class BaseFragment extends Fragment {
     View view;
@@ -22,6 +23,7 @@ public class BaseFragment extends Fragment {
     GameController gameController;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    FirebaseStorage storage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class BaseFragment extends Fragment {
         gameModel = MyModelSingleton.getInstance().getModel();
         database = gameModel.getDatabase();
         myRef = database.getReference("Rooms");
+        storage = gameModel.getStorage();
+
     }
 
     public void replaceFragment(Fragment fragment) {
@@ -37,5 +41,9 @@ public class BaseFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
         fragmentTransaction.commit();
+    }
+
+    public void playSound(int sound){
+        gameController.playSound(sound);
     }
 }

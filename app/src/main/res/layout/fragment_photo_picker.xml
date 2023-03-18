@@ -78,26 +78,6 @@
         app:layout_constraintTop_toBottomOf="@+id/captionText"
         app:layout_constraintVertical_bias="0.136" />
 
-    <ImageView
-        android:id="@+id/testDownloadImage"
-        android:layout_width="93dp"
-        android:layout_height="83dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:src="@tools:sample/avatars" />
-
-    <Button
-        android:id="@+id/download"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="147dp"
-        android:text="download"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadPhotoToFirebase"
-        app:layout_constraintVertical_bias="0.448" />
-
     <EditText
         android:id="@+id/captionText"
         android:layout_width="wrap_content"
