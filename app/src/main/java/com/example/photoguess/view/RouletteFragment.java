@@ -1,9 +1,11 @@
 package com.example.photoguess.view;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import android.os.Handler;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +30,8 @@ public class RouletteFragment extends BaseFragment {
     ArrayList<User> playersList = new ArrayList<>();
     int playerCount;
     int playerPosition;
-    volatile int arrowPosition = 0;
-    int prevArrowPosition = -1;
+    static volatile int arrowPosition = 0;
+    static volatile int prevArrowPosition = 1;
 
     static volatile boolean stop = false;
     FirebaseDatabase database;
@@ -43,6 +45,8 @@ public class RouletteFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         playerPosition = gameController.getPosition();
         playerCount = gameController.getPlayersCount();
+        database = gameModel.getDatabase();
+        roomRef = gameModel.getRoomRef();
         roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -60,8 +64,6 @@ public class RouletteFragment extends BaseFragment {
 
         binding = FragmentRouletteBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-        database = gameModel.getDatabase();
-        roomRef = gameModel.getRoomRef();
 
         initialize();
 
@@ -88,43 +90,28 @@ public class RouletteFragment extends BaseFragment {
     private void spinRoulette() {
         arrowPosition = 0;
         prevArrowPosition = -1;
-        new Thread(new Runnable() {
-            int ticks = 0;
+        final int[] delay = {100};
+        final int[] jumps = {0};
+        Handler mHandler = new Handler();
+        Runnable mUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                while (!stop){
-                    incArrowPosition();
-                    SystemClock.sleep(500);
-                    ticks++;
-                    if (ticks == 100){
-                        stop = true;
-                        break;
-                    }
+                System.out.println("arrowPosition: " + arrowPosition);
+                System.out.println("prevArrowPosition: " + prevArrowPosition);
+                incArrowPosition();
+                binding.selectedTest.setText(String.valueOf(arrowPosition));
+                toggleArrowVisibility(arrowPosition, prevArrowPosition);
+                view = binding.roomListView.getChildAt(arrowPosition);
+                if (jumps[0] < 100)
+                    mHandler.postDelayed(this, delay[0]);
+                if (jumps[0] % 10 == 0){
+                    delay[0] += 100;
                 }
+                jumps[0]++;
             }
-        });
+        };
 
-//        int quickTics = 3;
-//        int slowTics = quickTics * 2;
-//        float start = 0;
-//        while (start < slowTics){
-//            while (start < quickTics){
-////                SystemClock.sleep(250);
-//                incArrowPosition();
-//                start += 0.5;
-//            }
-////            SystemClock.sleep(500);
-//            incArrowPosition();
-//            start += 0.5;
-//        }
-////        SystemClock.sleep(1000);
-//        while (arrowPosition != photoUploaderInt)
-//            incArrowPosition();
-//
-//        SystemClock.sleep(5000);
-//        // Grab the host name from players list player1 is the host
-
-
+        mHandler.postDelayed(mUpdateRunnable,500);
     }
 
     private void showArrow(int pos) {
@@ -150,21 +137,17 @@ public class RouletteFragment extends BaseFragment {
 
     }
     private void toggleArrowVisibility(int pos, int prevPos) {
-        if (prevArrowPosition >= 0)
-            hideArrow(prevPos);
+        hideArrow(prevPos);
         showArrow(pos);
     }
 
     public void incArrowPosition(){
-        if (arrowPosition > 0)
-            prevArrowPosition = arrowPosition;
+        prevArrowPosition = arrowPosition;
         if (arrowPosition == playerCount - 1)
             arrowPosition = 0;
         else
             arrowPosition++;
-        System.out.println("Arrow position: " + arrowPosition);
-        binding.selectedTest.setText(String.valueOf(arrowPosition));
-        toggleArrowVisibility(arrowPosition, prevArrowPosition);
+
     }
 
     @Override
@@ -174,11 +157,13 @@ public class RouletteFragment extends BaseFragment {
     }
 
     public void initialize(){
-        gameController.getPlayersArray().forEach(player -> playersList.add(new User(player)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            gameController.getPlayersArray().forEach(player -> playersList.add(new User(player)));
+        }
         ListAdapter adapter = new ListAdapter(getContext(), playersList);
         binding.roomListView.setAdapter(adapter);
         spinRoulette();
-        nextFragment();
+//        nextFragment();
     }
 
     private void nextFragment() {
