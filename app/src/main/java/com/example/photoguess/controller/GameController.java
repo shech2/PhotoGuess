@@ -1,18 +1,45 @@
 package com.example.photoguess.controller;
 
+import android.content.Context;
+import android.media.MediaPlayer;
+
+import com.example.photoguess.R;
 import com.example.photoguess.model.GameModel;
 import com.example.photoguess.model.MyModelSingleton;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
 public class GameController {
 
     GameModel gameModel;
+    MediaPlayer backgroundMusic;
+    Context gameContext;
 
     public GameController() {
         gameModel = MyModelSingleton.getInstance().getModel();
     }
 
+    public void setContext(Context context) {
+        gameContext = context;
+    }
+
+    public void startBackgroundMusic() {
+        backgroundMusic = MediaPlayer.create(gameContext, R.raw.meme);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.start();
+    }
+
+    public void stopBackgroundMusic() {
+        backgroundMusic.stop();
+    }
+
+    public void playSound(int sound){
+        MediaPlayer mp = MediaPlayer.create(gameContext, sound);
+        mp.setLooping(false);
+        mp.start();
+        mp.setOnCompletionListener(MediaPlayer::release);
+    }
     public void startGame(int playerPosition, int playersCount,ArrayList<String> playersArray) {
         gameModel.setPlayerPosition(playerPosition);
         gameModel.setPlayerCount(playersCount);
@@ -65,5 +92,18 @@ public class GameController {
     public String getPhotoUploader() {
         return gameModel.getPhotoUploader();
     }
+
+    public void setStorageRef(StorageReference storageRef) {
+        gameModel.setStorageRef(storageRef);
+    }
+
+    public StorageReference getStorageRef() {
+        return gameModel.getStorageRef();
+    }
+
+    public boolean isMusicOn() {
+        return backgroundMusic.isPlaying();
+    }
+
 
 }

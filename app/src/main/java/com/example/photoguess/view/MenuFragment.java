@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+
+import com.example.photoguess.R;
 import com.example.photoguess.databinding.FragmentMenuBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
@@ -27,7 +27,19 @@ public class MenuFragment extends BaseFragment {
         binding.HowToPlayBTN.setOnClickListener(view -> replaceFragment(new HowToPlayFragment()));
         binding.createGameButton.setOnClickListener(view -> createRoom());
         binding.joinGameButton.setOnClickListener(view -> joinRoom());
-        binding.test.setOnClickListener(view -> replaceFragment(new GameFragment()));
+        binding.musicToggleButton.setOnClickListener(view -> {
+            System.out.println("Music button pressed");
+            if(gameController.isMusicOn()){
+                gameController.stopBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.mute);
+                System.out.println("Music Mute");
+            }else{
+                gameController.startBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.volume);
+                System.out.println("Music On");
+
+            }
+        });
         return view;
     }
 
@@ -38,7 +50,7 @@ public class MenuFragment extends BaseFragment {
             binding.editTextTextPersonName.requestFocus();
         }else {
             gameController.setName(name);
-            replaceFragment(new joinGameFragment());
+            replaceFragment(new JoinGameFragment());
         }
     }
 

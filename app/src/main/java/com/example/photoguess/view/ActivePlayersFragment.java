@@ -8,10 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +31,6 @@ import java.util.Objects;
 public class ActivePlayersFragment extends BaseFragment {
 
     FragmentActivePlayersBinding binding;
-    View view;
     String roomPin;
     String name;
     ValueEventListener gameProgressListener;
@@ -48,7 +43,6 @@ public class ActivePlayersFragment extends BaseFragment {
     String guessingArrayString;
     DatabaseReference roomRef;
     DatabaseReference gameProgressRef;
-    FirebaseDatabase database;
     FirebaseStorage storage;
     StorageReference storageRef;
 
@@ -58,15 +52,12 @@ public class ActivePlayersFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        savedInstanceState = this.getArguments();
-        assert savedInstanceState != null;
-        roomPin = savedInstanceState.getString("roomPin");
-        name = savedInstanceState.getString("name");
+        roomPin = gameController.getRoomPin();
+        name = gameController.getName();
         binding = FragmentActivePlayersBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.displayedImage.setImageResource(R.drawable.questionmark);
-        database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-        roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        roomRef = gameModel.getRoomRef();
         gameProgressRef = roomRef.child("GameProgress");
         roomRef.child("Caption").addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
@@ -83,8 +74,7 @@ public class ActivePlayersFragment extends BaseFragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
-        storageRef = storage.getReference().child("Room_" + roomPin);
+        storageRef = gameController.getStorageRef();
 
         storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
             SystemClock.sleep(1000);
@@ -95,6 +85,7 @@ public class ActivePlayersFragment extends BaseFragment {
             } else {
                 binding.displayedImage.setAlpha(0.1f);
             }
+            playSound(R.raw.gamestart);
         }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download failed", Toast.LENGTH_SHORT).show());
         binding.letterGuessButton.setOnClickListener(v -> {
             String letter = binding.guessText.getText().toString();
@@ -149,6 +140,7 @@ public class ActivePlayersFragment extends BaseFragment {
                 if (snapshot.child("CurrentGuess").getValue() != null){
                     String cg = snapshot.child("CurrentGuess").getValue(String.class);
                     if (!Objects.equals(cg, guessingArrayString)){
+                        playSound(R.raw.correctchoice);
                         guessingArrayString = snapshot.child("CurrentGuess").getValue(String.class);
                         guessingArray = guessingArrayString.toCharArray();
                         binding.hangmanText.setText(guessingArrayString);
@@ -208,6 +200,7 @@ public class ActivePlayersFragment extends BaseFragment {
             binding.hangmanText.setText(guessingArrayString);
             gameProgressRef.child("CurrentGuess").setValue(guessingArrayString);
         } else {
+            playSound(R.raw.badchoice);
             skipTurn();
         }
     }
@@ -258,17 +251,10 @@ public class ActivePlayersFragment extends BaseFragment {
     }
 
     private void nextFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putString("roomPin", roomPin);
-        bundle.putString("name", name);
         if (Objects.equals(winner, name)) {
-            PhotoPickerFragment photoPickerFragment = new PhotoPickerFragment();
-            photoPickerFragment.setArguments(bundle);
-            replaceFragment(photoPickerFragment);
+            replaceFragment(new PhotoPickerFragment());
         }else{
-            WaitingRoomFragment waitingRoomFragment = new WaitingRoomFragment();
-            waitingRoomFragment.setArguments(bundle);
-            replaceFragment(waitingRoomFragment);
+            replaceFragment(new WaitingRoomFragment());
         }
     }
 

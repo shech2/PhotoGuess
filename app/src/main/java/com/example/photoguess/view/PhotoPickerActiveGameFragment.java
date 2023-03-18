@@ -9,9 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.os.SystemClock;
 import android.view.LayoutInflater;
@@ -25,25 +22,19 @@ import com.example.photoguess.databinding.FragmentPhotoPickerActiveGameBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class PhotoPickerActiveGameFragment extends Fragment {
-
+public class PhotoPickerActiveGameFragment extends BaseFragment {
     FragmentPhotoPickerActiveGameBinding binding;
-    View view;
     String roomPin;
     Thread gameThread;
     DatabaseReference roomRef;
     DatabaseReference gameProgressRef;
-    FirebaseDatabase database;
-    FirebaseStorage storage;
     StorageReference storageRef;
     String messageBoardText;
     ValueEventListener gameProgressListener;
@@ -53,13 +44,12 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     String guessingArrayString;
 
     String photoCaptionText;
-    String name;
     String winner;
     char[] photoCaptionArray;
     char[] guessingArray;
     List<String> usedLetters = new ArrayList<>();
     ImageView displayedImage;
-    String[][] playersArray;
+    String[][] activePlayersArray;
     int playerCount = 4;
     int playersArrayIterator = 0;
     int blurLevel = 100;
@@ -71,17 +61,13 @@ public class PhotoPickerActiveGameFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         messageStage = 0;
-        savedInstanceState = this.getArguments();
-        assert savedInstanceState != null;
-        roomPin = savedInstanceState.getString("roomPin");
-        binding = FragmentPhotoPickerActiveGameBinding.inflate(inflater, container, false);
-        database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-        roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        roomPin = gameController.getRoomPin();
+        roomRef = gameModel.getRoomRef();
         gameProgressRef = roomRef.child("GameProgress");
+        binding = FragmentPhotoPickerActiveGameBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         displayedImage = binding.getRoot().findViewById(R.id.displayedImage);
-        storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
-        storageRef = storage.getReference().child("Room_" + roomPin);
+        storageRef = gameController.getStorageRef();
         storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
             SystemClock.sleep(1000);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -91,10 +77,13 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                     displayedImage.setRenderEffect(null);
                 } else {
                     displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+
+
                 }
             } else {
                 displayedImage.setAlpha(0.1f);
             }
+            playSound(R.raw.gamestart);
         }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download failed", Toast.LENGTH_SHORT).show());
 
         displayedImage.setImageResource(R.drawable.questionmark);
@@ -130,36 +119,20 @@ public class PhotoPickerActiveGameFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
                 int j = 0;
-                playerCount = (int) snapshot.child("Players").getChildrenCount();
-                playersArray = new String[2][playerCount - 1];
+                playerCount = gameController.getPlayersCount();
+                activePlayersArray = new String[2][playerCount - 1];
                 for (int i = 0; i < playerCount; i++) {
-                    if (!Objects.equals(snapshot.child("PhotoUploader").getValue(), snapshot.child("Players")
-                            .child("Player" + (i + 1))
-                            .getKey()))
-                    {
-                        playersArray[0][j] = "Player" + (i + 1);
-                        for (DataSnapshot child : snapshot.child("Players")
-                            .child("Player" + (i + 1))
-                            .getChildren())
-                        {
-                            playersArray[1][j] = Objects.requireNonNull(child.getValue()).toString();
-                        }
+                    if (!Objects.equals(gameController.getPlayersArray().get(i), gameController.getPhotoUploader())){
+                        activePlayersArray[0][j] = "Player" + (i + 1);
+                        activePlayersArray[1][j] = gameController.getPlayersArray().get(i);
                         j++;
-                    }
-                    else{
-                        for (DataSnapshot child : snapshot.child("Players")
-                                .child("Player" + (i + 1))
-                                .getChildren())
-                        {
-                            name = Objects.requireNonNull(child.getValue()).toString();
-                        }
                     }
                 }
                 playerCount--;
                 messageBoardText = "Game Started";
                 binding.MessageBoard.setText(messageBoardText);
                 gameProgressRef.child("MessageBoard").setValue(messageBoardText);
-                currentPlayerTurn = playersArray[1][0];
+                currentPlayerTurn = activePlayersArray[1][0];
                 gameProgressRef.child("CurrentPlayerTurn").setValue(currentPlayerTurn);
                 gameProgressRef.child("BlurLevel").setValue(100);
                 gameProgressRef.child("Timer").setValue(30);
@@ -218,7 +191,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                 }
 
                 if (snapshot.child("Restart").getValue() != null){
-                    nextFragment();
+                    replaceFragment(new WaitingRoomFragment());
                 }
             }
 
@@ -241,9 +214,10 @@ public class PhotoPickerActiveGameFragment extends Fragment {
                 gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
                 gameProgressRef.child("MessageBoard")
                         .setValue(winner + " has won the round!");
+                playSound(R.raw.gamewinner);
                 for (int i = 0; i < playerCount; i++) {
-                    if (playersArray[1][i].equals(winner)){
-                        roomRef.child("PhotoUploader").setValue(playersArray[0][i]);
+                    if (activePlayersArray[1][i].equals(winner)){
+                        roomRef.child("PhotoUploader").setValue(activePlayersArray[0][i]);
                     }
                 }
                 messageStage = 1;
@@ -312,7 +286,7 @@ public class PhotoPickerActiveGameFragment extends Fragment {
         } else {
             playersArrayIterator++;
         }
-        currentPlayerTurn = playersArray[1][playersArrayIterator];
+        currentPlayerTurn = activePlayersArray[1][playersArrayIterator];
         gameProgressRef.child("CurrentPlayerTurn").setValue(currentPlayerTurn);
         if (blurLevel > 0)
             blurLevel -= 10;
@@ -366,22 +340,6 @@ public class PhotoPickerActiveGameFragment extends Fragment {
         }
 
 
-    }
-
-    private void nextFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putString("roomPin", roomPin);
-        bundle.putString("name", name);
-        WaitingRoomFragment waitingRoomFragment = new WaitingRoomFragment();
-        waitingRoomFragment.setArguments(bundle);
-        replaceFragment(waitingRoomFragment);
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = PhotoPickerActiveGameFragment.this.requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
-        fragmentTransaction.commit();
     }
 
     public void onDestroyView() {

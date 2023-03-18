@@ -65,7 +65,7 @@ public class RouletteFragment extends BaseFragment {
 
     private void spinRoulette() {
 
-        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.rouletteding);
+
 
         arrowPosition = 0;
         prevArrowPosition = -1;
@@ -83,7 +83,9 @@ public class RouletteFragment extends BaseFragment {
                 else{
                     toggleArrowVisibility(arrowPosition, prevArrowPosition);
                     view = binding.roomListView.getChildAt(arrowPosition);
+                    MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.dingcut);
                     mediaPlayer.start();
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
                     if (jumps[0] < 70){
                         mHandler.postDelayed(this, delay[0]);
                         if (jumps[0] % 58 == 0){
@@ -98,6 +100,9 @@ public class RouletteFragment extends BaseFragment {
                         if (Objects.equals(playersList.get(arrowPosition).getName(), gameController.getPhotoUploader())){
                             stop[0] = true;
                             mHandler.postDelayed(this, delay[0] + 2000);
+                            mediaPlayer = MediaPlayer.create(getContext(), R.raw.pickerchosen);
+                            mediaPlayer.start();
+                            mediaPlayer.setOnCompletionListener(MediaPlayer::release);
                         }
                         else
                             mHandler.postDelayed(this, delay[0]);

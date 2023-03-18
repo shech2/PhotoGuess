@@ -50,6 +50,7 @@ public class gameLobbyFragment extends BaseFragment {
 
         myName = gameController.getName();
         roomPin = gameController.getRoomPin();
+        gameController.setStorageRef(storage.getReference().child("Room_" + roomPin));
         playersArray.add(myName);
 
         binding = FragmentGameLobbyBinding.inflate(inflater, container, false);
@@ -105,6 +106,7 @@ public class gameLobbyFragment extends BaseFragment {
                 if (snapshot.child("GameStarted").getValue() != null && !startSequence){
                     gameStarted = true;
                     startSequence = true;
+                    gameController.startGame(playerPosition, playersCount, playersArray);
                     replaceFragment(new RouletteFragment());
                 }
             }

@@ -35,7 +35,6 @@ public class PhotoPickerFragment extends BaseFragment {
     FragmentPhotoPickerBinding binding;
     ActivityResultLauncher<String> gallery;
     DatabaseReference roomRef;
-    FirebaseDatabase database;
     FirebaseStorage storage;
     StorageReference storageRef;
     String roomPin;
@@ -52,7 +51,6 @@ public class PhotoPickerFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         roomPin = gameController.getRoomPin();
         roomRef = gameModel.getRoomRef();
-        database = gameModel.getDatabase();
         binding = FragmentPhotoPickerBinding.inflate(inflater, container, false);
         view = binding.getRoot();
 
@@ -60,15 +58,6 @@ public class PhotoPickerFragment extends BaseFragment {
         gallery = registerForActivityResult(getContentContract, result -> {
             binding.uploadPhotoImage.setImageURI(result);
             photoChanged = true;
-        });
-
-        binding.download.setOnClickListener(view -> {
-            storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
-            storageRef = storage.getReference().child("Room_" + roomPin);
-            storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                binding.testDownloadImage.setImageBitmap(bitmap);
-            }).addOnFailureListener(exception -> Toast.makeText(getContext(), "Download test", Toast.LENGTH_SHORT).show());
         });
 
         binding.uploadPhotoImage.setOnClickListener(view -> gallery.launch("image/*"));
@@ -110,11 +99,7 @@ public class PhotoPickerFragment extends BaseFragment {
                     binding.TimerTV.setText("");
                 }
                 if (timeLeft == 0 && gameStarting){
-                    Bundle bundle = new Bundle();
-                    bundle.putString("roomPin", roomPin);
-                    PhotoPickerActiveGameFragment photoPickerActiveGameFragment = new PhotoPickerActiveGameFragment();
-                    photoPickerActiveGameFragment.setArguments(bundle);
-                    replaceFragment(photoPickerActiveGameFragment);
+                    replaceFragment(new PhotoPickerActiveGameFragment());
                 }
             }
 

@@ -1,5 +1,6 @@
 package com.example.photoguess.view;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,9 @@ public class HowToPlayFragment extends BaseFragment {
         binding.PhotoIV.setImageResource(R.drawable.lobbyscreenshot);
         list.add(R.drawable.lobbyscreenshot);
         list.add(R.drawable.roulettescreenshot);
+        MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.rouletteding);
         binding.NextBTN.setOnClickListener(view -> {
+            mp.start();
             if (binding.PhotoIV.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.lobbyscreenshot).getConstantState()) {
                 binding.PhotoIV.setImageResource(R.drawable.roulettescreenshot);
             } else if (binding.PhotoIV.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.roulettescreenshot).getConstantState()) {

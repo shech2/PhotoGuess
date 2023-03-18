@@ -2,6 +2,8 @@ package com.example.photoguess.model;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -17,11 +19,15 @@ public class GameModel {
     FirebaseDatabase database;
     DatabaseReference myRef;
     DatabaseReference roomRef;
+    FirebaseStorage storage;
+    StorageReference storageRef;
+
 
     public GameModel(){
         database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
         myRef = database.getReference("Rooms");
         roomRef = database.getReference("Rooms");
+        storage = FirebaseStorage.getInstance("gs://photoguess-6deb1.appspot.com");
     }
     public void startGame(){
         this.gameStarted = true;
@@ -96,4 +102,15 @@ public class GameModel {
         return photoUploader;
     }
 
+    public FirebaseStorage getStorage() {
+        return storage;
+    }
+
+    public void setStorageRef(StorageReference storageRef) {
+        this.storageRef = storageRef;
+    }
+
+    public StorageReference getStorageRef() {
+        return storageRef;
+    }
 }

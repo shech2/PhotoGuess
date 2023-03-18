@@ -1,5 +1,6 @@
 package com.example.photoguess.view;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class WaitingRoomFragment extends Fragment {
+public class WaitingRoomFragment extends BaseFragment {
 
     FragmentWaitingRoomBinding binding;
-    View view;
     DatabaseReference roomRef;
-    FirebaseDatabase database;
     int timeLeft = 30;
     boolean gameStarting = false;
     String roomPin;
@@ -35,12 +34,10 @@ public class WaitingRoomFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        savedInstanceState = this.getArguments();
-        assert savedInstanceState != null;
-        roomPin = savedInstanceState.getString("roomPin");
-        name = savedInstanceState.getString("name");
+        roomPin = gameController.getRoomPin();
+        name = gameController.getName();
         binding = FragmentWaitingRoomBinding.inflate(inflater, container, false);
-        roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        roomRef = gameModel.getRoomRef();
         view = binding.getRoot();
         timeLeftEventListener = new ValueEventListener() {
             @Override
@@ -51,12 +48,7 @@ public class WaitingRoomFragment extends Fragment {
                 }
                 binding.TimerTV.setText(String.valueOf(timeLeft));
                 if (timeLeft == 0 && gameStarting) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("roomPin", roomPin);
-                    bundle.putString("name", name);
-                    ActivePlayersFragment activePlayersFragment = new ActivePlayersFragment();
-                    activePlayersFragment.setArguments(bundle);
-                    replaceFragment(activePlayersFragment);
+                    replaceFragment(new ActivePlayersFragment());
                 }
             }
 
@@ -76,17 +68,10 @@ public class WaitingRoomFragment extends Fragment {
 
             }
         };
-        // The event listener is ON THE CHILD!!!!
+
         roomRef.child("Time Left").addValueEventListener(timeLeftEventListener);
         roomRef.child("PhotoUploaded").addValueEventListener(gameReady);
         return view;
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = WaitingRoomFragment.this.requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
-        fragmentTransaction.commit();
     }
 
     public void onDestroyView() {
