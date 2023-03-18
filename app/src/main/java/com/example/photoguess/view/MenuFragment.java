@@ -32,22 +32,17 @@ public class MenuFragment extends BaseFragment {
     }
 
     private void joinRoom(){
-        Bundle bundle = new Bundle();
         String name = binding.editTextTextPersonName.getText().toString().trim();
         if(name.isEmpty()){
             binding.editTextTextPersonName.setError("Please enter a name");
             binding.editTextTextPersonName.requestFocus();
         }else {
-            bundle.putString("name", name);
-            joinGameFragment joinFrag = new joinGameFragment();
-            joinFrag.setArguments(bundle);
-            replaceFragment(joinFrag);
+            gameController.setName(name);
+            replaceFragment(new joinGameFragment());
         }
     }
 
     private void createRoom(){
-        FirebaseDatabase database = gameModel.getDatabase();
-        DatabaseReference myRef = database.getReference("Rooms");
         final String[] roomPin = {pinGenerator()};
         gameController.setRoomPin(roomPin[0]);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -74,12 +69,9 @@ public class MenuFragment extends BaseFragment {
                             myRef.child("Room_"+roomPin[0]).child("Players").child("Player2").child("David").setValue("David");
                             myRef.child("Room_"+roomPin[0]).child("Players").child("Player3").child("Moshe").setValue("Moshe");
 
-                            gameLobbyFragment createFrag = new gameLobbyFragment();
-                                Bundle lobbyBundle = new Bundle();
-                                lobbyBundle.putString("name" , name);
-                                lobbyBundle.putString("roomPin" , roomPin[0]);
-                                createFrag.setArguments(lobbyBundle);
-                                replaceFragment(createFrag);
+                            gameController.setName(name);
+                            gameController.setRoomPin(roomPin[0]);
+                            replaceFragment(new gameLobbyFragment());
                         }
                     }
                 }

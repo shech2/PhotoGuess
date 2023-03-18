@@ -4,9 +4,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,10 +27,12 @@ import java.util.Objects;
 public class gameLobbyFragment extends BaseFragment {
 
     boolean gameStarted = false;
+    boolean startSequence = false;
     FragmentGameLobbyBinding binding;
     ListView listView;
     TextView roomPinDisplay;
-    ArrayList<String> players = new ArrayList<>();
+    ArrayList<String> playersArray = new ArrayList<>();
+    String myName;
 
     int playerPosition;
     String roomPin;
@@ -49,32 +48,32 @@ public class gameLobbyFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        savedInstanceState = this.getArguments();
-        if (savedInstanceState != null) {
-            name = savedInstanceState.getString("name");
-            roomPin = savedInstanceState.getString("roomPin");
-            players.add(name);
-        }
+
+        myName = gameController.getName();
+        roomPin = gameController.getRoomPin();
+        playersArray.add(myName);
+
         binding = FragmentGameLobbyBinding.inflate(inflater, container, false);
         view = binding.getRoot();
+
         binding.backButton2.setOnClickListener(view -> replaceFragment(new MenuFragment()));
-        binding.startGameButton.setOnClickListener(view -> gameController.startGame());
+        binding.startGameButton.setOnClickListener(view -> gameController.startGame(playerPosition, playersCount, playersArray));
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);
-        database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-        roomRef = database.getReference("Rooms").child("Room_" + roomPin);
+        database = gameModel.getDatabase();
+        roomRef = gameModel.getRoomRef();
         playersRef = roomRef.child("Players");
         countRef = roomRef.child("Counter");
         playersEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                players.clear();
+                playersArray.clear();
                 for (DataSnapshot player : snapshot.getChildren()) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         for (DataSnapshot playerName : player.getChildren()) {
                             if (playerName.getValue() != null) {
-                                players.add(playerName.getValue().toString());
-                                if (playerName.getValue().toString().equals(name)){
+                                playersArray.add(playerName.getValue().toString());
+                                if (playerName.getValue().toString().equals(myName)){
                                     playerPosition = Integer.parseInt(Objects.requireNonNull(player.getKey()).substring(player.getKey().length() - 1));
                                     if (playerPosition == 1){
                                         binding.startGameButton.setVisibility(View.VISIBLE);
@@ -84,7 +83,7 @@ public class gameLobbyFragment extends BaseFragment {
                         }
                     }
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item2, players);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.fragment_item2, playersArray);
                 listView.setAdapter(adapter);
             }
 
@@ -105,16 +104,10 @@ public class gameLobbyFragment extends BaseFragment {
                 }else{
                     binding.wfpTV.setVisibility(View.INVISIBLE);
                 }
-                if (snapshot.child("GameStarted").getValue() != null){
+                if (snapshot.child("GameStarted").getValue() != null && !startSequence){
                     gameStarted = true;
-                    roomRef.child("GameStarted").removeValue();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", name);
-                    bundle.putString("roomPin", roomPin);
-                    bundle.putInt("playerPosition", playerPosition);
-                    rouletteFragment rouletteFrag = new rouletteFragment();
-                    rouletteFrag.setArguments(bundle);
-                    replaceFragment(rouletteFrag);
+                    startSequence = true;
+                    replaceFragment(new RouletteFragment());
                 }
             }
             @Override
@@ -147,16 +140,4 @@ public class gameLobbyFragment extends BaseFragment {
         playersRef.removeEventListener(playersEventListener);
         countRef.removeEventListener(roomEventListener);
     }
-
-//    public void startGame(){
-//        setRandomUploader();
-//        roomRef.child("Time Left").setValue(30);
-//        roomRef.child("GameStarted").setValue(true);
-//    }
-//
-//    public void setRandomUploader(){
-//        roomRef.child("PhotoUploader").setValue("Player1");
-////        int random = (int) (Math.random() * playersCount + 1);
-////        roomRef.child("PhotoUploader").setValue("Player"+random);
-//    }
 }
