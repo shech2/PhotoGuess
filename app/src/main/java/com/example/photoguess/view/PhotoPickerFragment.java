@@ -30,10 +30,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
-public class PhotoPickerFragment extends Fragment {
+public class PhotoPickerFragment extends BaseFragment {
 
     FragmentPhotoPickerBinding binding;
-    View view;
     ActivityResultLauncher<String> gallery;
     DatabaseReference roomRef;
     FirebaseDatabase database;
@@ -51,12 +50,10 @@ public class PhotoPickerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        savedInstanceState = this.getArguments();
-        assert savedInstanceState != null;
-        roomPin = savedInstanceState.getString("roomPin");
+        roomPin = gameController.getRoomPin();
+        roomRef = gameModel.getRoomRef();
+        database = gameModel.getDatabase();
         binding = FragmentPhotoPickerBinding.inflate(inflater, container, false);
-        database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
-        roomRef = database.getReference("Rooms").child("Room_" + roomPin);
         view = binding.getRoot();
 
         ActivityResultContracts.GetContent getContentContract = new ActivityResultContracts.GetContent();
@@ -193,13 +190,6 @@ public class PhotoPickerFragment extends Fragment {
         roomRef.child("Time Left").removeEventListener(timeLeftEventListener);
         roomRef.child("Time Left").setValue(30);
         roomRef.child("PhotoUploaded").removeValue();
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = PhotoPickerFragment.this.requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.mainFragmentContainerView, fragment);
-        fragmentTransaction.commit();
     }
 
 }
