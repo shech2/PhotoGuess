@@ -1,5 +1,6 @@
 package com.example.photoguess.view;
 
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -64,6 +65,8 @@ public class RouletteFragment extends BaseFragment {
 
     private void spinRoulette() {
 
+        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.rouletteding);
+
         arrowPosition = 0;
         prevArrowPosition = -1;
         final boolean[] stop = {false};
@@ -80,6 +83,7 @@ public class RouletteFragment extends BaseFragment {
                 else{
                     toggleArrowVisibility(arrowPosition, prevArrowPosition);
                     view = binding.roomListView.getChildAt(arrowPosition);
+                    mediaPlayer.start();
                     if (jumps[0] < 70){
                         mHandler.postDelayed(this, delay[0]);
                         if (jumps[0] % 58 == 0){
