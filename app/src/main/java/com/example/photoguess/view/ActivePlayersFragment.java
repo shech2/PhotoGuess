@@ -19,7 +19,6 @@ import com.example.photoguess.databinding.FragmentActivePlayersBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -43,7 +42,6 @@ public class ActivePlayersFragment extends BaseFragment {
     String guessingArrayString;
     DatabaseReference roomRef;
     DatabaseReference gameProgressRef;
-    FirebaseStorage storage;
     StorageReference storageRef;
 
     int blurLevel = 100;
@@ -251,6 +249,7 @@ public class ActivePlayersFragment extends BaseFragment {
     }
 
     private void nextFragment() {
+        gameController.setPhotoUploader(winner);
         if (Objects.equals(winner, name)) {
             replaceFragment(new PhotoPickerFragment());
         }else{

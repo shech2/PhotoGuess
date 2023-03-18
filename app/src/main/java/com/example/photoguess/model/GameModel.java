@@ -37,14 +37,8 @@ public class GameModel {
     }
     public void setRandomUploader(){
         int random = (int) (Math.random() * playerCount);
-        System.out.println("Random player: " + playersArray.get(random));
-        random = (int) (Math.random() * playerCount);
-        System.out.println("Random player: " + playersArray.get(random));
-        random = (int) (Math.random() * playerCount);
-        System.out.println("Random player: " + playersArray.get(random));
-        random = (int) (Math.random() * playerCount);
-        roomRef.child("PhotoUploader").setValue("May");
-        photoUploader = "May";
+        roomRef.child("PhotoUploader").setValue(playersArray.get(random));
+        photoUploader = playersArray.get(random);
     }
 
     public FirebaseDatabase getDatabase(){

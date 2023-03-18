@@ -208,13 +208,14 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
 
     public void endGameSequence(){
         gameThread.interrupt();
+        playSound(R.raw.gamewinner);
+        gameController.setPhotoUploader(winner);
         gameThread = new Thread(() -> {
             if (messageStage == 0){
                 gameProgressRef.child("BlurLevel").setValue(0);
                 gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
                 gameProgressRef.child("MessageBoard")
                         .setValue(winner + " has won the round!");
-                playSound(R.raw.gamewinner);
                 for (int i = 0; i < playerCount; i++) {
                     if (activePlayersArray[1][i].equals(winner)){
                         roomRef.child("PhotoUploader").setValue(activePlayersArray[0][i]);
