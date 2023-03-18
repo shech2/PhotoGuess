@@ -3,10 +3,17 @@ package com.example.photoguess.model;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class GameModel {
     boolean gameStarted = false;
     String myName;
     String roomPin;
+    String photoUploader;
+    ArrayList<String> playersArray;
+
+    int playerPosition;
+    int playerCount;
     FirebaseDatabase database;
     DatabaseReference myRef;
     DatabaseReference roomRef;
@@ -23,9 +30,15 @@ public class GameModel {
         roomRef.child("GameStarted").setValue(true);
     }
     public void setRandomUploader(){
-        roomRef.child("PhotoUploader").setValue("Player1");
-//        int random = (int) (Math.random() * playersCount + 1);
-//        roomRef.child("PhotoUploader").setValue("Player"+random);
+        int random = (int) (Math.random() * playerCount);
+        System.out.println("Random player: " + playersArray.get(random));
+        random = (int) (Math.random() * playerCount);
+        System.out.println("Random player: " + playersArray.get(random));
+        random = (int) (Math.random() * playerCount);
+        System.out.println("Random player: " + playersArray.get(random));
+        random = (int) (Math.random() * playerCount);
+        roomRef.child("PhotoUploader").setValue("May");
+        photoUploader = "May";
     }
 
     public FirebaseDatabase getDatabase(){
@@ -36,4 +49,51 @@ public class GameModel {
         this.roomPin = roomPin;
         roomRef = myRef.child("Room_" + roomPin);
     }
+
+    public String getRoomPin() {
+        return roomPin;
+    }
+    public void setMyName(String name) {
+        this.myName = name;
+    }
+
+    public String getMyName() {
+        return myName;
+    }
+
+    public DatabaseReference getRoomRef() {
+        return roomRef;
+    }
+
+    public void setPlayerPosition(int playerPosition) {
+        this.playerPosition = playerPosition;
+    }
+
+    public int getPlayerPosition() {
+        return playerPosition;
+    }
+
+    public void setPlayerCount(int playerCount) {
+        this.playerCount = playerCount;
+    }
+
+    public int getPlayerCount() {
+        return playerCount;
+    }
+
+    public void setPlayersArray(ArrayList<String> playersArray) {
+        this.playersArray = playersArray;
+    }
+
+    public ArrayList<String> getPlayersArray() {
+        return playersArray;
+    }
+    public void setPhotoUploader(String photoUploader) {
+        this.photoUploader = photoUploader;
+    }
+
+    public String getPhotoUploader() {
+        return photoUploader;
+    }
+
 }
