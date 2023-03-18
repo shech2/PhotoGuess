@@ -76,12 +76,12 @@
                 tools:ignore="TextContrastCheck" />
 
             <Button
-                android:id="@+id/SettingsBTN"
+                android:id="@+id/HowToPlayBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:backgroundTint="#FF0000"
-                android:text="@string/settings"
+                android:text="@string/HowToPlay"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
@@ -96,7 +96,7 @@
                 android:layout_marginEnd="70dp"
                 android:backgroundTint="#FF0000"
                 android:text="@string/test"
-                app:layout_constraintBottom_toTopOf="@+id/SettingsBTN"
+                app:layout_constraintBottom_toTopOf="@+id/HowToPlayBTN"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/joinGameButton"
