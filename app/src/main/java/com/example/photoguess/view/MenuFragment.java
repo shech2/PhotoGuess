@@ -24,7 +24,7 @@ public class MenuFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentMenuBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-        binding.SettingsBTN.setOnClickListener(view -> replaceFragment(new SettingsFragment()));
+        binding.HowToPlayBTN.setOnClickListener(view -> replaceFragment(new HowToPlayFragment()));
         binding.createGameButton.setOnClickListener(view -> createRoom());
         binding.joinGameButton.setOnClickListener(view -> joinRoom());
         binding.test.setOnClickListener(view -> replaceFragment(new GameFragment()));

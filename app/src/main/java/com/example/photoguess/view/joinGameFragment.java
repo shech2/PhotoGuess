@@ -41,7 +41,7 @@ public class joinGameFragment extends Fragment {
         myRef = database.getReference("Rooms");
         binding = FragmentJoinGameBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-        binding.SettingsBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
+        binding.HowToPlayBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         binding.joinGameButton.setOnClickListener(view -> {
             String enteredRoomPin = binding.editTextGamePIN.getText().toString().trim();
             if(enteredRoomPin.length() != 5 || !enteredRoomPin.matches("\\d+")){
