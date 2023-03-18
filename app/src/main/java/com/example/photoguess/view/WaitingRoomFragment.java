@@ -40,7 +40,6 @@ public class WaitingRoomFragment extends Fragment {
         roomPin = savedInstanceState.getString("roomPin");
         name = savedInstanceState.getString("name");
         binding = FragmentWaitingRoomBinding.inflate(inflater, container, false);
-        database = FirebaseDatabase.getInstance("https://photoguess-6deb1-default-rtdb.europe-west1.firebasedatabase.app/");
         roomRef = database.getReference("Rooms").child("Room_" + roomPin);
         view = binding.getRoot();
         timeLeftEventListener = new ValueEventListener() {

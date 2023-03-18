@@ -32,20 +32,13 @@ public class RouletteFragment extends BaseFragment {
     int playerPosition;
     static volatile int arrowPosition = 0;
     static volatile int prevArrowPosition = 1;
-
-    static volatile boolean stop = false;
-    FirebaseDatabase database;
     DatabaseReference roomRef;
-
-
-    ValueEventListener selectorListener;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         playerPosition = gameController.getPosition();
         playerCount = gameController.getPlayersCount();
-        database = gameModel.getDatabase();
         roomRef = gameModel.getRoomRef();
         roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -66,49 +59,47 @@ public class RouletteFragment extends BaseFragment {
         view = binding.getRoot();
 
         initialize();
-
-        selectorListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue() != null){
-                    binding.selectedTest.setText(snapshot.getValue().toString());
-                    arrowPosition = Integer.parseInt(snapshot.getValue().toString())-1;
-                    toggleArrowVisibility(arrowPosition, prevArrowPosition);
-                    prevArrowPosition = arrowPosition;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        roomRef.child("SelectedPlayer").addValueEventListener(selectorListener);
         return view;
     }
 
     private void spinRoulette() {
+
         arrowPosition = 0;
         prevArrowPosition = -1;
+        final boolean[] stop = {false};
         final int[] delay = {100};
-        final int[] jumps = {0};
+        final int[] jumps = {1};
         Handler mHandler = new Handler();
         Runnable mUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                System.out.println("arrowPosition: " + arrowPosition);
-                System.out.println("prevArrowPosition: " + prevArrowPosition);
                 incArrowPosition();
-                binding.selectedTest.setText(String.valueOf(arrowPosition));
-                toggleArrowVisibility(arrowPosition, prevArrowPosition);
-                view = binding.roomListView.getChildAt(arrowPosition);
-                if (jumps[0] < 100)
-                    mHandler.postDelayed(this, delay[0]);
-                if (jumps[0] % 10 == 0){
-                    delay[0] += 100;
+                if (stop[0]){
+                    nextFragment();
                 }
-                jumps[0]++;
-            }
+                else{
+                    toggleArrowVisibility(arrowPosition, prevArrowPosition);
+                    view = binding.roomListView.getChildAt(arrowPosition);
+                    if (jumps[0] < 70){
+                        mHandler.postDelayed(this, delay[0]);
+                        if (jumps[0] % 58 == 0){
+                            delay[0] += 100;
+                        }
+                        else if (jumps[0] > 58 && jumps[0] % 5 == 0){
+                            delay[0] += 100;
+                        }
+                        jumps[0]++;
+                    }
+                    else{
+                        if (Objects.equals(playersList.get(arrowPosition).getName(), gameController.getPhotoUploader())){
+                            stop[0] = true;
+                            mHandler.postDelayed(this, delay[0] + 2000);
+                        }
+                        else
+                            mHandler.postDelayed(this, delay[0]);
+                    }
+                }
+                }
         };
 
         mHandler.postDelayed(mUpdateRunnable,500);
@@ -153,7 +144,6 @@ public class RouletteFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        roomRef.removeEventListener(selectorListener);
     }
 
     public void initialize(){
@@ -163,7 +153,6 @@ public class RouletteFragment extends BaseFragment {
         ListAdapter adapter = new ListAdapter(getContext(), playersList);
         binding.roomListView.setAdapter(adapter);
         spinRoulette();
-//        nextFragment();
     }
 
     private void nextFragment() {

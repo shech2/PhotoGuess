@@ -43,7 +43,6 @@ public class gameLobbyFragment extends BaseFragment {
     int playersCount;
     DatabaseReference roomRef;
     DatabaseReference countRef;
-    FirebaseDatabase database;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -60,7 +59,6 @@ public class gameLobbyFragment extends BaseFragment {
         binding.startGameButton.setOnClickListener(view -> gameController.startGame(playerPosition, playersCount, playersArray));
         listView = view.findViewById(R.id.roomList);
         roomPinDisplay = view.findViewById(R.id.pinDisplay);
-        database = gameModel.getDatabase();
         roomRef = gameModel.getRoomRef();
         playersRef = roomRef.child("Players");
         countRef = roomRef.child("Counter");
