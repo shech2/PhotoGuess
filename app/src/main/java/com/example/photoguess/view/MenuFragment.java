@@ -83,7 +83,7 @@ public class MenuFragment extends BaseFragment {
 
                             gameController.setName(name);
                             gameController.setRoomPin(roomPin[0]);
-                            replaceFragment(new gameLobbyFragment());
+                            replaceFragment(new GameLobbyFragment());
                         }
                     }
                 }

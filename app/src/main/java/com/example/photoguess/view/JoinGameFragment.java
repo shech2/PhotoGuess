@@ -53,7 +53,7 @@ public class JoinGameFragment extends BaseFragment {
                                     .child("Player"+(snapshot.child("Room_"+roomPin)
                                             .child("Players").getChildrenCount()+1)).child(myName).setValue(myName);
                             gameController.setRoomPin(roomPin);
-                            replaceFragment(new gameLobbyFragment());
+                            replaceFragment(new GameLobbyFragment());
                         }
                         else{
                             binding.editTextGamePIN.setError("RoomPin does not exist");

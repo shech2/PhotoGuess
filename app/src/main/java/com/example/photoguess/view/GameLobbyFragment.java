@@ -18,13 +18,12 @@ import com.example.photoguess.databinding.FragmentGameLobbyBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class gameLobbyFragment extends BaseFragment {
+public class GameLobbyFragment extends BaseFragment {
 
     boolean gameStarted = false;
     boolean startSequence = false;
