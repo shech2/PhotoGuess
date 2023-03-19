@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.gameLobbyFragment">
+    tools:context=".view.GameLobbyFragment">
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -95,5 +95,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/backButton2" />
 
+    <ImageView
+        android:id="@+id/musicToggleButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/volume" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

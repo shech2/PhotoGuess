@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.photoguess.R;
 import com.example.photoguess.databinding.FragmentJoinGameBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,19 @@ public class JoinGameFragment extends BaseFragment {
         myName = gameController.getName();
         binding = FragmentJoinGameBinding.inflate(inflater, container, false);
         view = binding.getRoot();
+        if (gameController.isMusicOn())
+            binding.musicToggleButton.setImageResource(R.drawable.volume);
+        else
+            binding.musicToggleButton.setImageResource(R.drawable.mute);
+        binding.musicToggleButton.setOnClickListener(view -> {
+            if(gameController.isMusicOn()){
+                gameController.stopBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.mute);
+            }else{
+                gameController.startBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.volume);
+            }
+        });
         binding.HowToPlayBTN.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         binding.joinGameButton.setOnClickListener(view -> {
             String roomPin = binding.editTextGamePIN.getText().toString().trim();
@@ -39,7 +53,7 @@ public class JoinGameFragment extends BaseFragment {
                                     .child("Player"+(snapshot.child("Room_"+roomPin)
                                             .child("Players").getChildrenCount()+1)).child(myName).setValue(myName);
                             gameController.setRoomPin(roomPin);
-                            replaceFragment(new gameLobbyFragment());
+                            replaceFragment(new GameLobbyFragment());
                         }
                         else{
                             binding.editTextGamePIN.setError("RoomPin does not exist");

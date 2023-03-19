@@ -19,7 +19,6 @@ import com.example.photoguess.databinding.FragmentActivePlayersBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -43,7 +42,6 @@ public class ActivePlayersFragment extends BaseFragment {
     String guessingArrayString;
     DatabaseReference roomRef;
     DatabaseReference gameProgressRef;
-    FirebaseStorage storage;
     StorageReference storageRef;
 
     int blurLevel = 100;
@@ -57,6 +55,19 @@ public class ActivePlayersFragment extends BaseFragment {
         binding = FragmentActivePlayersBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.displayedImage.setImageResource(R.drawable.questionmark);
+        if (gameController.isMusicOn())
+            binding.musicToggleButton.setImageResource(R.drawable.volume);
+        else
+            binding.musicToggleButton.setImageResource(R.drawable.mute);
+        binding.musicToggleButton.setOnClickListener(view -> {
+            if(gameController.isMusicOn()){
+                gameController.stopBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.mute);
+            }else{
+                gameController.startBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.volume);
+            }
+        });
         roomRef = gameModel.getRoomRef();
         gameProgressRef = roomRef.child("GameProgress");
         roomRef.child("Caption").addListenerForSingleValueEvent(new ValueEventListener(){
@@ -121,14 +132,24 @@ public class ActivePlayersFragment extends BaseFragment {
                     binding.fullGuessButton.setEnabled(false);
                     binding.skipTurnButton.setEnabled(false);
                 }
-                if (blurLevel != snapshot.child("BlurLevel").getValue(Integer.class)) {
-                    blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (blurLevel <= 0) {
-                            binding.displayedImage.setRenderEffect(null);
+                if (snapshot.child("BlurLevel").getValue(Integer.class) != null){
+                    if (blurLevel != snapshot.child("BlurLevel").getValue(Integer.class)) {
+                        blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            if (blurLevel <= 0) {
+                                binding.displayedImage.setRenderEffect(null);
+                            } else {
+                                binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                            }
                         } else {
-                            binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                            binding.displayedImage.setAlpha(0.1f);
                         }
+                    }
+                }
+                else {
+                    blurLevel = 100;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
                     } else {
                         binding.displayedImage.setAlpha(0.1f);
                     }
@@ -136,11 +157,11 @@ public class ActivePlayersFragment extends BaseFragment {
 
                 if (snapshot.child("UsedLetters").getValue() != null) {
                     usedLetters = (List<String>) snapshot.child("UsedLetters").getValue();
+                    binding.updatingUsedLettersText.setText(usedLetters.toString());
                 }
                 if (snapshot.child("CurrentGuess").getValue() != null){
                     String cg = snapshot.child("CurrentGuess").getValue(String.class);
                     if (!Objects.equals(cg, guessingArrayString)){
-                        playSound(R.raw.correctchoice);
                         guessingArrayString = snapshot.child("CurrentGuess").getValue(String.class);
                         guessingArray = guessingArrayString.toCharArray();
                         binding.hangmanText.setText(guessingArrayString);
@@ -150,6 +171,10 @@ public class ActivePlayersFragment extends BaseFragment {
                 if ((snapshot.child("Winner").getValue() != null) && (snapshot.child("Restart").getValue() != null)){
                     winner = snapshot.child("Winner").getValue(String.class);
                     nextFragment();
+                }
+
+                if (snapshot.child("GameOver").getValue() != null){
+                    replaceFragment(new MenuFragment());
                 }
 
             }
@@ -199,6 +224,7 @@ public class ActivePlayersFragment extends BaseFragment {
             guessingArrayString = new String(guessingArray);
             binding.hangmanText.setText(guessingArrayString);
             gameProgressRef.child("CurrentGuess").setValue(guessingArrayString);
+            playSound(R.raw.correctchoice);
         } else {
             playSound(R.raw.badchoice);
             skipTurn();
@@ -213,6 +239,7 @@ public class ActivePlayersFragment extends BaseFragment {
                 guessingArrayString = new String(guessingArray);
                 binding.hangmanText.setText(guessingArrayString);
                 gameProgressRef.child("Winner").setValue(name);
+                playSound(R.raw.gamewinner);
             }
             else {
                 skipTurn();
@@ -251,6 +278,7 @@ public class ActivePlayersFragment extends BaseFragment {
     }
 
     private void nextFragment() {
+        gameController.setPhotoUploader(winner);
         if (Objects.equals(winner, name)) {
             replaceFragment(new PhotoPickerFragment());
         }else{

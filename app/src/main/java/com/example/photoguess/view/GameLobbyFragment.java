@@ -18,13 +18,12 @@ import com.example.photoguess.databinding.FragmentGameLobbyBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class gameLobbyFragment extends BaseFragment {
+public class GameLobbyFragment extends BaseFragment {
 
     boolean gameStarted = false;
     boolean startSequence = false;
@@ -55,7 +54,19 @@ public class gameLobbyFragment extends BaseFragment {
 
         binding = FragmentGameLobbyBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-
+        if (gameController.isMusicOn())
+            binding.musicToggleButton.setImageResource(R.drawable.volume);
+        else
+            binding.musicToggleButton.setImageResource(R.drawable.mute);
+        binding.musicToggleButton.setOnClickListener(view -> {
+            if(gameController.isMusicOn()){
+                gameController.stopBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.mute);
+            }else{
+                gameController.startBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.volume);
+            }
+        });
         binding.backButton2.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         binding.startGameButton.setOnClickListener(view -> gameController.startGame(playerPosition, playersCount, playersArray));
         listView = view.findViewById(R.id.roomList);

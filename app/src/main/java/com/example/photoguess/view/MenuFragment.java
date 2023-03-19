@@ -27,17 +27,17 @@ public class MenuFragment extends BaseFragment {
         binding.HowToPlayBTN.setOnClickListener(view -> replaceFragment(new HowToPlayFragment()));
         binding.createGameButton.setOnClickListener(view -> createRoom());
         binding.joinGameButton.setOnClickListener(view -> joinRoom());
+        if (gameController.isMusicOn())
+            binding.musicToggleButton.setImageResource(R.drawable.volume);
+        else
+            binding.musicToggleButton.setImageResource(R.drawable.mute);
         binding.musicToggleButton.setOnClickListener(view -> {
-            System.out.println("Music button pressed");
             if(gameController.isMusicOn()){
                 gameController.stopBackgroundMusic();
                 binding.musicToggleButton.setImageResource(R.drawable.mute);
-                System.out.println("Music Mute");
             }else{
                 gameController.startBackgroundMusic();
                 binding.musicToggleButton.setImageResource(R.drawable.volume);
-                System.out.println("Music On");
-
             }
         });
         return view;
@@ -83,7 +83,7 @@ public class MenuFragment extends BaseFragment {
 
                             gameController.setName(name);
                             gameController.setRoomPin(roomPin[0]);
-                            replaceFragment(new gameLobbyFragment());
+                            replaceFragment(new GameLobbyFragment());
                         }
                     }
                 }

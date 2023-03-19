@@ -2,6 +2,7 @@ package com.example.photoguess.view;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -24,6 +25,7 @@ public class BaseFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference myRef;
     FirebaseStorage storage;
+    Button test;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
