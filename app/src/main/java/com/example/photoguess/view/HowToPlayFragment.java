@@ -12,11 +12,14 @@ import com.example.photoguess.R;
 import com.example.photoguess.databinding.FragmentHowToPlayBinding;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 public class HowToPlayFragment extends BaseFragment {
 
     FragmentHowToPlayBinding binding;
     ArrayList<Integer> list = new ArrayList<>();
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -25,9 +28,26 @@ public class HowToPlayFragment extends BaseFragment {
         binding = FragmentHowToPlayBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.homeButton.setOnClickListener(view -> replaceFragment(new MenuFragment()));
-        binding.PhotoIV.setImageResource(R.drawable.lobbyscreenshot);
-        list.add(R.drawable.lobbyscreenshot);
-        list.add(R.drawable.roulettescreenshot);
+        binding.PhotoIV.setImageResource(R.drawable.one);
+        list.add(R.drawable.one);
+        list.add(R.drawable.two);
+        list.add(R.drawable.three);
+        list.add(R.drawable.four);
+        list.add(R.drawable.five);
+        list.add(R.drawable.six);
+        list.add(R.drawable.seven);
+        ListIterator<Integer> listIterator = list.listIterator();
+
+        // Next button iterates through the list of images
+        binding.NextBTN.setOnClickListener(view ->{
+            if(listIterator.hasNext())
+                binding.PhotoIV.setImageResource(listIterator.next());
+        });
+        binding.PrevBTN.setOnClickListener(view ->{
+            if(listIterator.hasPrevious())
+                binding.PhotoIV.setImageResource(listIterator.previous());
+        });
+
         if (gameController.isMusicOn())
             binding.musicToggleButton.setImageResource(R.drawable.volume);
         else
@@ -39,20 +59,6 @@ public class HowToPlayFragment extends BaseFragment {
             }else{
                 gameController.startBackgroundMusic();
                 binding.musicToggleButton.setImageResource(R.drawable.volume);
-            }
-        });
-        binding.NextBTN.setOnClickListener(view -> {
-            if (binding.PhotoIV.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.lobbyscreenshot).getConstantState()) {
-                binding.PhotoIV.setImageResource(R.drawable.roulettescreenshot);
-            } else if (binding.PhotoIV.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.roulettescreenshot).getConstantState()) {
-                binding.PhotoIV.setImageResource(R.drawable.lobbyscreenshot);
-            }
-        });
-        binding.PrevBTN.setOnClickListener(view -> {
-            if (binding.PhotoIV.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.lobbyscreenshot).getConstantState()) {
-                binding.PhotoIV.setImageResource(R.drawable.roulettescreenshot);
-            } else if (binding.PhotoIV.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.roulettescreenshot).getConstantState()) {
-                binding.PhotoIV.setImageResource(R.drawable.lobbyscreenshot);
             }
         });
 
