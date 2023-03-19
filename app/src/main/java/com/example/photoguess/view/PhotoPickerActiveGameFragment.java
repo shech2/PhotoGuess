@@ -234,6 +234,8 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
         gameController.setPhotoUploader(winner);
         gameThread = new Thread(() -> {
             if (messageStage == 0){
+                gameProgressRef.child("BlurLevel").setValue(0);
+                gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
                 roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -246,8 +248,6 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
 
                         } else {
                             roomRef.child("WinnerList").child(winner).setValue(winner);
-                            gameProgressRef.child("BlurLevel").setValue(0);
-                            gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
                             gameProgressRef.child("MessageBoard")
                                     .setValue(winner + " has won the round!");
                             for (int i = 0; i < playerCount; i++) {
