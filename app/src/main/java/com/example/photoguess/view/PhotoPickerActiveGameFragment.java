@@ -66,6 +66,19 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
         gameProgressRef = roomRef.child("GameProgress");
         binding = FragmentPhotoPickerActiveGameBinding.inflate(inflater, container, false);
         view = binding.getRoot();
+        if (gameController.isMusicOn())
+            binding.musicToggleButton.setImageResource(R.drawable.volume);
+        else
+            binding.musicToggleButton.setImageResource(R.drawable.mute);
+        binding.musicToggleButton.setOnClickListener(view -> {
+            if(gameController.isMusicOn()){
+                gameController.stopBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.mute);
+            }else{
+                gameController.startBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.volume);
+            }
+        });
         displayedImage = binding.getRoot().findViewById(R.id.displayedImage);
         storageRef = gameController.getStorageRef();
         storageRef.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
@@ -175,6 +188,7 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
 
                 if (snapshot.child("UsedLetters").getValue() != null) {
                     usedLetters = (List<String>) snapshot.child("UsedLetters").getValue();
+                    binding.updatingUsedLettersText.setText(usedLetters.toString());
                 }
                 if (snapshot.child("CurrentGuess").getValue() != null){
                     String cg = snapshot.child("CurrentGuess").getValue(String.class);
@@ -207,9 +221,26 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
     }
 
     public void endGameSequence(){
+        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child("WinnerList").getValue() != null){
+                    if (snapshot.child("WinnerList").hasChild(winner)){
+                        gameProgressRef.child("MessageBoard")
+                                .setValue(winner + " has won the Game!");
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         gameThread.interrupt();
         playSound(R.raw.gamewinner);
         gameController.setPhotoUploader(winner);
+        roomRef.child("WinnerList").child(winner).setValue(winner);
         gameThread = new Thread(() -> {
             if (messageStage == 0){
                 gameProgressRef.child("BlurLevel").setValue(0);

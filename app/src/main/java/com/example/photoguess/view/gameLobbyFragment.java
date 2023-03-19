@@ -55,7 +55,19 @@ public class gameLobbyFragment extends BaseFragment {
 
         binding = FragmentGameLobbyBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-
+        if (gameController.isMusicOn())
+            binding.musicToggleButton.setImageResource(R.drawable.volume);
+        else
+            binding.musicToggleButton.setImageResource(R.drawable.mute);
+        binding.musicToggleButton.setOnClickListener(view -> {
+            if(gameController.isMusicOn()){
+                gameController.stopBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.mute);
+            }else{
+                gameController.startBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.volume);
+            }
+        });
         binding.backButton2.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         binding.startGameButton.setOnClickListener(view -> gameController.startGame(playerPosition, playersCount, playersArray));
         listView = view.findViewById(R.id.roomList);

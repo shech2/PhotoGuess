@@ -53,7 +53,19 @@ public class PhotoPickerFragment extends BaseFragment {
         roomRef = gameModel.getRoomRef();
         binding = FragmentPhotoPickerBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-
+        if (gameController.isMusicOn())
+            binding.musicToggleButton.setImageResource(R.drawable.volume);
+        else
+            binding.musicToggleButton.setImageResource(R.drawable.mute);
+        binding.musicToggleButton.setOnClickListener(view -> {
+            if(gameController.isMusicOn()){
+                gameController.stopBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.mute);
+            }else{
+                gameController.startBackgroundMusic();
+                binding.musicToggleButton.setImageResource(R.drawable.volume);
+            }
+        });
         ActivityResultContracts.GetContent getContentContract = new ActivityResultContracts.GetContent();
         gallery = registerForActivityResult(getContentContract, result -> {
             binding.uploadPhotoImage.setImageURI(result);
