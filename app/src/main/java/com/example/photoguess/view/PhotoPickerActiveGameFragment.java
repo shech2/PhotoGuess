@@ -207,6 +207,12 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
                 if (snapshot.child("Restart").getValue() != null){
                     replaceFragment(new WaitingRoomFragment());
                 }
+
+                if (snapshot.child("GameOver").getValue() != null){
+                    SystemClock.sleep(2000);
+                    gameProgressRef.child("GameOver").removeValue();
+                    replaceFragment(new MenuFragment());
+                }
             }
 
             @Override
@@ -221,38 +227,42 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
     }
 
     public void endGameSequence(){
-        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child("WinnerList").getValue() != null){
-                    if (snapshot.child("WinnerList").hasChild(winner)){
-                        gameProgressRef.child("MessageBoard")
-                                .setValue(winner + " has won the Game!");
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
 
         gameThread.interrupt();
         playSound(R.raw.gamewinner);
         gameController.setPhotoUploader(winner);
-        roomRef.child("WinnerList").child(winner).setValue(winner);
         gameThread = new Thread(() -> {
             if (messageStage == 0){
-                gameProgressRef.child("BlurLevel").setValue(0);
-                gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
-                gameProgressRef.child("MessageBoard")
-                        .setValue(winner + " has won the round!");
-                for (int i = 0; i < playerCount; i++) {
-                    if (activePlayersArray[1][i].equals(winner)){
-                        roomRef.child("PhotoUploader").setValue(activePlayersArray[0][i]);
+                roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.child("WinnerList").getValue() != null && snapshot.child("WinnerList").hasChild(winner)){
+
+                                gameProgressRef.child("MessageBoard")
+                                        .setValue(winner + " has won the Game!");
+                                messageStage = 4;
+
+
+                        } else {
+                            roomRef.child("WinnerList").child(winner).setValue(winner);
+                            gameProgressRef.child("BlurLevel").setValue(0);
+                            gameProgressRef.child("CurrentGuess").setValue(photoCaptionText);
+                            gameProgressRef.child("MessageBoard")
+                                    .setValue(winner + " has won the round!");
+                            for (int i = 0; i < playerCount; i++) {
+                                if (activePlayersArray[1][i].equals(winner)){
+                                    roomRef.child("PhotoUploader").setValue(activePlayersArray[0][i]);
+                                }
+                            }
+                            messageStage = 1;
+                        }
                     }
-                }
-                messageStage = 1;
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
             else if (messageStage == 1){
                 SystemClock.sleep(3000);
@@ -263,8 +273,13 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
             else if (messageStage == 2){
                 SystemClock.sleep(2000);
                 gameProgressRef.child("Restart").setValue(true);
-                gameThread.interrupt();
                 messageStage = 3;
+                gameThread.interrupt();
+            }
+            else if (messageStage == 4){
+                SystemClock.sleep(5000);
+                gameProgressRef.child("GameOver").setValue(true);
+                gameThread.interrupt();
             }
         });
         gameThread.start();

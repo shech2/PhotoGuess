@@ -132,7 +132,7 @@ public class ActivePlayersFragment extends BaseFragment {
                     binding.fullGuessButton.setEnabled(false);
                     binding.skipTurnButton.setEnabled(false);
                 }
-                if (snapshot.child("BlurLevel") != null){
+                if (snapshot.child("BlurLevel").getValue(Integer.class) != null){
                     if (blurLevel != snapshot.child("BlurLevel").getValue(Integer.class)) {
                         blurLevel = snapshot.child("BlurLevel").getValue(Integer.class);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -144,6 +144,14 @@ public class ActivePlayersFragment extends BaseFragment {
                         } else {
                             binding.displayedImage.setAlpha(0.1f);
                         }
+                    }
+                }
+                else {
+                    blurLevel = 100;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        binding.displayedImage.setRenderEffect(RenderEffect.createBlurEffect(blurLevel, blurLevel, Shader.TileMode.MIRROR));
+                    } else {
+                        binding.displayedImage.setAlpha(0.1f);
                     }
                 }
 
@@ -163,6 +171,10 @@ public class ActivePlayersFragment extends BaseFragment {
                 if ((snapshot.child("Winner").getValue() != null) && (snapshot.child("Restart").getValue() != null)){
                     winner = snapshot.child("Winner").getValue(String.class);
                     nextFragment();
+                }
+
+                if (snapshot.child("GameOver").getValue() != null){
+                    replaceFragment(new MenuFragment());
                 }
 
             }
