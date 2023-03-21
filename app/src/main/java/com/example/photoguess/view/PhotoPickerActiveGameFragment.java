@@ -240,14 +240,13 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.child("WinnerList").getValue() != null && snapshot.child("WinnerList").hasChild(winner)){
-
                                 gameProgressRef.child("MessageBoard")
                                         .setValue(winner + " has won the Game!");
                                 messageStage = 4;
 
 
                         } else {
-                            roomRef.child("WinnerList").child(winner).setValue(winner);
+
                             gameProgressRef.child("MessageBoard")
                                     .setValue(winner + " has won the round!");
                             for (int i = 0; i < playerCount; i++) {
@@ -266,6 +265,7 @@ public class PhotoPickerActiveGameFragment extends BaseFragment {
             }
             else if (messageStage == 1){
                 SystemClock.sleep(3000);
+                roomRef.child("WinnerList").child(winner).setValue(winner);
                 gameProgressRef.child("MessageBoard")
                         .setValue("Next round will begin momentarily");
                 messageStage = 2;

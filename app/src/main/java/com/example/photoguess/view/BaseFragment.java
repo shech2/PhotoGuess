@@ -25,7 +25,6 @@ public class BaseFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference myRef;
     FirebaseStorage storage;
-    Button test;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
