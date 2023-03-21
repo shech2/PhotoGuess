@@ -28,14 +28,14 @@ public class HowToPlayFragment extends BaseFragment {
         binding = FragmentHowToPlayBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.homeButton.setOnClickListener(view -> replaceFragment(new MenuFragment()));
-        binding.PhotoIV.setImageResource(R.drawable.one);
-        list.add(R.drawable.one);
-        list.add(R.drawable.two);
-        list.add(R.drawable.three);
-        list.add(R.drawable.four);
-        list.add(R.drawable.five);
-        list.add(R.drawable.six);
-        list.add(R.drawable.seven);
+        binding.PhotoIV.setImageResource(R.drawable.screenshot1);
+        list.add(R.drawable.screenshot1);
+        list.add(R.drawable.screenshot2);
+        list.add(R.drawable.screenshot3);
+        list.add(R.drawable.screenshot4);
+        list.add(R.drawable.screenshot5);
+        list.add(R.drawable.screenshot6);
+        list.add(R.drawable.screenshot7);
         ListIterator<Integer> listIterator = list.listIterator();
 
         // Next button iterates through the list of images
