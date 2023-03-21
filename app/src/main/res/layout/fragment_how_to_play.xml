@@ -32,7 +32,7 @@
             android:layout_height="568dp"
             android:layout_marginTop="89dp"
             android:layout_marginBottom="40dp"
-            android:src="@drawable/questionmark"
+            android:src="@drawable/images"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,5 +71,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/volume" />
+
+        <TextView
+            android:id="@+id/pageIndex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 / 7"
+            app:layout_constraintBottom_toBottomOf="@+id/PrevBTN"
+            app:layout_constraintEnd_toStartOf="@+id/NextBTN"
+            app:layout_constraintStart_toEndOf="@+id/PrevBTN"
+            app:layout_constraintTop_toTopOf="@+id/NextBTN" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.example.photoguess.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,19 +20,19 @@ import java.util.ListIterator;
 public class HowToPlayFragment extends BaseFragment {
 
     FragmentHowToPlayBinding binding;
-    LinkedList<Integer> list = new LinkedList<>();
-
-    ListIterator<Integer> listIterator;
+    ArrayList<Integer> list = new ArrayList<>();
+    int listIterator;
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Binding the layout to the fragment
+        listIterator = 0;
         binding = FragmentHowToPlayBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.homeButton.setOnClickListener(view -> replaceFragment(new MenuFragment()));
         binding.PhotoIV.setImageResource(R.drawable.images);
+        list.add(R.drawable.images);
         list.add(R.drawable.screenshot1);
         list.add(R.drawable.screenshot2);
         list.add(R.drawable.screenshot3);
@@ -39,29 +40,26 @@ public class HowToPlayFragment extends BaseFragment {
         list.add(R.drawable.screenshot5);
         list.add(R.drawable.screenshot6);
         list.add(R.drawable.screenshot7);
-        listIterator = list.listIterator();
+        updatePageIndex();
 
-        // Next button iterates through the list of images till last one
         binding.NextBTN.setOnClickListener(view ->{
-            if(listIterator.nextIndex() == list.size()-1){
-                binding.NextBTN.setEnabled(false);
-                binding.PrevBTN.setEnabled(true);
+            if (listIterator < list.size()-1)
+                binding.PhotoIV.setImageResource(list.get(++listIterator));
+            else{
+                listIterator = 0;
+                binding.PhotoIV.setImageResource(list.get(0));
             }
-            if(listIterator.hasNext()) {
-                binding.PhotoIV.setImageResource(listIterator.next());
-            }
-
+            updatePageIndex();
         });
 
-        // Previous button iterates through the list of images till first one
         binding.PrevBTN.setOnClickListener(view ->{
-            if(listIterator.previousIndex() == 0){
-                binding.PrevBTN.setEnabled(false);
-                binding.NextBTN.setEnabled(true);
+            if (listIterator > 0)
+                binding.PhotoIV.setImageResource(list.get(--listIterator));
+            else{
+                listIterator = list.size()-1;
+                binding.PhotoIV.setImageResource(list.get(listIterator));
             }
-            if(listIterator.hasPrevious()) {
-                binding.PhotoIV.setImageResource(listIterator.previous());
-            }
+            updatePageIndex();
         });
 
         if (gameController.isMusicOn())
@@ -80,6 +78,11 @@ public class HowToPlayFragment extends BaseFragment {
 
 
         return view;
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void updatePageIndex(){
+        binding.pageIndex.setText((listIterator+1) + "/" + list.size());
     }
 
 

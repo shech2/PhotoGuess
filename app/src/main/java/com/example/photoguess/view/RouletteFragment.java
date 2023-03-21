@@ -78,12 +78,10 @@ public class RouletteFragment extends BaseFragment {
 
     private void spinRoulette() {
 
-
-
         arrowPosition = 0;
         prevArrowPosition = -1;
         final boolean[] stop = {false};
-        final int[] delay = {100};
+        final int[] delay = {50};
         final int[] jumps = {1};
         Handler mHandler = new Handler();
         Runnable mUpdateRunnable = new Runnable() {
@@ -99,12 +97,12 @@ public class RouletteFragment extends BaseFragment {
                     MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.dingcut);
                     mediaPlayer.start();
                     mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-                    if (jumps[0] < 70){
+                    if (jumps[0] < 50){
                         mHandler.postDelayed(this, delay[0]);
-                        if (jumps[0] % 58 == 0){
+                        if (jumps[0] % 40 == 0){
                             delay[0] += 100;
                         }
-                        else if (jumps[0] > 58 && jumps[0] % 5 == 0){
+                        else if (jumps[0] > 43 && jumps[0] % 5 == 0){
                             delay[0] += 100;
                         }
                         jumps[0]++;
