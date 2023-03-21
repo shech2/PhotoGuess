@@ -13,12 +13,15 @@ import com.example.photoguess.databinding.FragmentHowToPlayBinding;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.ListIterator;
 
 public class HowToPlayFragment extends BaseFragment {
 
     FragmentHowToPlayBinding binding;
-    ArrayList<Integer> list = new ArrayList<>();
+    LinkedList<Integer> list = new LinkedList<>();
+
+    ListIterator<Integer> listIterator;
 
 
     @Override
@@ -28,7 +31,7 @@ public class HowToPlayFragment extends BaseFragment {
         binding = FragmentHowToPlayBinding.inflate(inflater, container, false);
         view = binding.getRoot();
         binding.homeButton.setOnClickListener(view -> replaceFragment(new MenuFragment()));
-        binding.PhotoIV.setImageResource(R.drawable.screenshot1);
+        binding.PhotoIV.setImageResource(R.drawable.images);
         list.add(R.drawable.screenshot1);
         list.add(R.drawable.screenshot2);
         list.add(R.drawable.screenshot3);
@@ -36,16 +39,29 @@ public class HowToPlayFragment extends BaseFragment {
         list.add(R.drawable.screenshot5);
         list.add(R.drawable.screenshot6);
         list.add(R.drawable.screenshot7);
-        ListIterator<Integer> listIterator = list.listIterator();
+        listIterator = list.listIterator();
 
-        // Next button iterates through the list of images
+        // Next button iterates through the list of images till last one
         binding.NextBTN.setOnClickListener(view ->{
-            if(listIterator.hasNext())
+            if(listIterator.nextIndex() == list.size()-1){
+                binding.NextBTN.setEnabled(false);
+                binding.PrevBTN.setEnabled(true);
+            }
+            if(listIterator.hasNext()) {
                 binding.PhotoIV.setImageResource(listIterator.next());
+            }
+
         });
+
+        // Previous button iterates through the list of images till first one
         binding.PrevBTN.setOnClickListener(view ->{
-            if(listIterator.hasPrevious())
+            if(listIterator.previousIndex() == 0){
+                binding.PrevBTN.setEnabled(false);
+                binding.NextBTN.setEnabled(true);
+            }
+            if(listIterator.hasPrevious()) {
                 binding.PhotoIV.setImageResource(listIterator.previous());
+            }
         });
 
         if (gameController.isMusicOn())
